@@ -1,0 +1,50 @@
+[00:00:01.689] Server  LOG      ✓ Ready in 1162ms
+[00:00:56.998] Server  LOG      ✓ Compiled in 110ms
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:10.993] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:14.292] Browser ERROR   AI Insight Error {"code":"ERR_BAD_RESPONSE","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"data":"{\"user_id\":1,\"transactions\":[],\"mood_logs\":[]}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Content-Type":"application/json"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"http://localhost:8000/ai/predict","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Request failed with status code 503","name":"AxiosError","stack":"AxiosError: Request failed with status code 503\n    at settle (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:4645:16)\n    at XMLHttpRequest.onloadend (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5160:174)\n    at Axios.request (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5964:49)\n    at async InsightsPanel.useEffect.fetchInsight (http://localhost:3000/_next/static/chunks/_589c84a9._.js:629:37)","status":503}
+[00:20:14.540] Browser ERROR   Simulation Error {"code":"ERR_BAD_RESPONSE","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"data":"{\"current_balance\":5000,\"avg_daily_spending\":150,\"income_frequency_days\":30,\"income_amount\":4000,\"savings_goal\":10000}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Content-Type":"application/json"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"http://localhost:8000/ai/simulate","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Request failed with status code 503","name":"AxiosError","stack":"AxiosError: Request failed with status code 503\n    at settle (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:4645:16)\n    at XMLHttpRequest.onloadend (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5160:174)\n    at Axios.request (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5964:49)\n    at async SimulationGraph.useEffect.fetchSimulation (http://localhost:3000/_next/static/chunks/_589c84a9._.js:813:37)","status":503}
+[00:20:14.540] Browser ERROR   Simulation Error {"code":"ERR_BAD_RESPONSE","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"data":"{\"current_balance\":5000,\"avg_daily_spending\":150,\"income_frequency_days\":30,\"income_amount\":4000,\"savings_goal\":10000}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Content-Type":"application/json"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"http://localhost:8000/ai/simulate","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Request failed with status code 503","name":"AxiosError","stack":"AxiosError: Request failed with status code 503\n    at settle (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:4645:16)\n    at XMLHttpRequest.onloadend (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5160:174)\n    at Axios.request (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5964:49)\n    at async SimulationGraph.useEffect.fetchSimulation (http://localhost:3000/_next/static/chunks/_589c84a9._.js:813:37)","status":503}
+[00:20:14.541] Browser ERROR   AI Insight Error {"code":"ERR_BAD_RESPONSE","config":{"adapter":["xhr","http","fetch"],"allowAbsoluteUrls":true,"data":"{\"user_id\":1,\"transactions\":[],\"mood_logs\":[]}","env":{},"headers":{"Accept":"application/json, text/plain, */*","Content-Type":"application/json"},"maxBodyLength":-1,"maxContentLength":-1,"method":"post","timeout":0,"transformRequest":[null],"transformResponse":[null],"transitional":{"clarifyTimeoutError":false,"forcedJSONParsing":true,"silentJSONParsing":true},"url":"http://localhost:8000/ai/predict","xsrfCookieName":"XSRF-TOKEN","xsrfHeaderName":"X-XSRF-TOKEN"},"message":"Request failed with status code 503","name":"AxiosError","stack":"AxiosError: Request failed with status code 503\n    at settle (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:4645:16)\n    at XMLHttpRequest.onloadend (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5160:174)\n    at Axios.request (http://localhost:3000/_next/static/chunks/node_modules_c4b70818._.js:5964:49)\n    at async InsightsPanel.useEffect.fetchInsight (http://localhost:3000/_next/static/chunks/_589c84a9._.js:629:37)","status":503}
+[00:20:37.044] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:37.044] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:40.329] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:20:40.329] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:24:36.693] Server  LOG      ✓ Compiled in 55ms
+[00:24:40.636] Server  LOG      ✓ Compiled in 61ms
+[00:25:16.139] Server  LOG      ✓ Compiled in 54ms
+[00:25:19.651] Server  LOG      ✓ Compiled in 37ms

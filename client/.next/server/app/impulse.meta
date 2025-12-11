@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/impulse/layout,_N_T_/impulse/page,_N_T_/impulse"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/impulse/__PAGE__",
+    "/impulse",
+    "/_index",
+    "/_head"
+  ]
+}
