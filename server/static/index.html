@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FYnance - AI Financial Assistant</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>FYnance - VisionOS</title>
+    <!-- Cache Busting for Futuristic Design -->
+    <link rel="stylesheet" href="/static/css/style.css?v=vision_os_1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Using Inter/Outfit is fine, but system font 'SF Pro' is targeted via CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
-    <div id="app">
-        <!-- Navigation -->
-        <nav class="navbar hidden" id="navbar">
+    <!-- 3D Depth Layers -->
+    <div class="ambient-layer">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Glass Overlay -->
+    <div id="app" class="app-container">
+        <!-- Floating Glass Nav -->
+        <nav class="glass-nav hidden" id="navbar">
             <div class="nav-content">
-                <a href="#dashboard" class="logo">FYnance</a>
-                <div class="nav-links">
-                    <a href="#dashboard" class="nav-link" data-page="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-                    <a href="#spending" class="nav-link" data-page="spending"><i data-lucide="dollar-sign"></i> Spending</a>
-                    <a href="#goals" class="nav-link" data-page="goals"><i data-lucide="target"></i> Goals</a>
-                    <a href="#mood" class="nav-link" data-page="mood"><i data-lucide="smile"></i> Mood</a>
-                    <a href="#ai" class="nav-link" data-page="ai"><i data-lucide="bot"></i> AI Insights</a>
-                    <button id="logout-btn" class="nav-btn">Logout</button>
+                <a href="#dashboard" class="brand-logo">
+                    <span class="logo-text">FYNANCE</span>
+                </a>
+                <div class="nav-items">
+                    <a href="#dashboard" class="nav-item" data-page="dashboard">Dashboard</a>
+                    <a href="#spending" class="nav-item" data-page="spending">Spending</a>
+                    <a href="#goals" class="nav-item" data-page="goals">Goals</a>
+                    <a href="#subscriptions" class="nav-item" data-page="subscriptions">subs</a>
+                    <a href="#mood" class="nav-item" data-page="mood">Mood</a>
+                    <a href="#ai" class="nav-item" data-page="ai">AI</a>
                 </div>
+                <button id="logout-btn" class="vision-btn-sm">Logout</button>
             </div>
         </nav>
 
-        <!-- Main Content Area -->
-        <main id="main-content">
-            <!-- Pages will be injected here -->
-            <div id="loading" class="loader">Loading...</div>
+        <!-- Main Content -->
+        <main id="main-content" class="glass-viewport">
+            <!-- Dynamic Content -->
         </main>
     </div>
 
-    <!-- Scripts -->
     <script src="/static/js/app.js" type="module"></script>
 </body>
+
 </html>

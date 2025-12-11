@@ -6,17 +6,18 @@ export async function renderSpending(container) {
         <div>
             <h1 class="page-title">Spending Log</h1>
             
-            <!-- Add Entry Form -->
-            <div class="glass-card" style="margin-bottom: 3rem;">
-                <h2 style="margin-bottom: 1.5rem;">Add New Expense</h2>
-                <form id="spending-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;">
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Amount ($)</label>
-                        <input type="number" step="0.01" name="amount" class="glass-input" required>
+            <!-- Add Entry Form (Inset Grouped) -->
+            <div class="ios-card">
+                <div class="ios-card-header">New Expense</div>
+                <form id="spending-form" class="ios-form">
+                    <div class="ios-input-group">
+                        <label class="ios-label">Amount</label>
+                        <input type="number" step="0.01" name="amount" class="ios-input" placeholder="$0.00" required>
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Category</label>
-                        <select name="category" class="glass-input" required>
+                    
+                    <div class="ios-input-group">
+                        <label class="ios-label">Category</label>
+                        <select name="category" class="ios-input" required style="background: transparent; color: var(--ios-text);">
                             <option value="Food" style="color: black;">Food</option>
                             <option value="Transport" style="color: black;">Transport</option>
                             <option value="Entertainment" style="color: black;">Entertainment</option>
@@ -25,20 +26,24 @@ export async function renderSpending(container) {
                             <option value="Other" style="color: black;">Other</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Description</label>
-                        <input type="text" name="description" class="glass-input">
+
+                    <div class="ios-input-group">
+                        <label class="ios-label">Description</label>
+                        <input type="text" name="description" class="ios-input" placeholder="e.g. Lunch at Joe's">
                     </div>
-                    <div>
-                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Date</label>
-                        <input type="date" name="date" class="glass-input" required value="${new Date().toISOString().split('T')[0]}">
+
+                    <div class="ios-input-group" style="border-bottom: none;">
+                        <label class="ios-label">Date</label>
+                        <input type="date" name="date" class="ios-input" required value="${new Date().toISOString().split('T')[0]}">
                     </div>
-                    <button type="submit" class="btn-primary" style="margin-top: 0;">+ Add</button>
+
+                    <button type="submit" class="ios-btn">Add Expense</button>
                 </form>
             </div>
 
             <!-- List -->
-            <div id="spending-list" class="glass" style="border-radius: 1.5rem; overflow: hidden;">
+            <h3 class="ios-card-header" style="margin-left: 1rem; margin-bottom: 0.5rem;">History</h3>
+            <div id="spending-list" class="ios-list">
                 <div class="loading">Loading entries...</div>
             </div>
         </div>
@@ -59,26 +64,22 @@ export async function renderSpending(container) {
 
     const renderList = (data) => {
         if (!data.length) {
-            listContainer.innerHTML = '<p style="padding: 2rem; text-align: center; opacity: 0.6;">No expenses found.</p>';
+            listContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">No expenses found.</div>';
             return;
         }
 
-        listContainer.innerHTML = `
-             <div style="display: grid; gap: 1px; background: rgba(255,255,255,0.05);">
-                ${data.map(item => `
-                    <div style="display: flex; justify-content: space-between; padding: 1.5rem; background: rgba(15, 23, 42, 0.6);">
-                        <div>
-                            <div style="font-weight: bold; color: rgb(var(--color-2));">${item.category}</div>
-                            <div style="font-size: 0.9rem; opacity: 0.8;">${item.description || '-'}</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-weight: bold; font-size: 1.1rem;">-$${item.amount.toFixed(2)}</div>
-                            <div style="font-size: 0.8rem; opacity: 0.6;">${new Date(item.date).toLocaleDateString()}</div>
-                        </div>
-                    </div>
-                `).join('')}
+        listContainer.innerHTML = data.map(item => `
+            <div class="ios-list-item">
+                <div>
+                    <div class="text-bold">${item.category}</div>
+                    <div class="text-caption">${item.description || '-'}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="text-bold text-primary">-$${item.amount.toFixed(2)}</div>
+                    <div class="text-caption">${new Date(item.date).toLocaleDateString()}</div>
+                </div>
             </div>
-        `;
+        `).join('');
     };
 
     // Handle Submit

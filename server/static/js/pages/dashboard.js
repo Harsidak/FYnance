@@ -16,51 +16,48 @@ export async function renderDashboard(container) {
         container.innerHTML = `
             <div style="padding-bottom: 2rem;">
                 <h1 class="page-title">
-                    <span>👋 Welcome, ${user.username}</span>
-                    <span style="font-size: 1rem; opacity: 0.7; margin-left: auto;">XP: ${user.total_xp}</span>
+                    Good Evening, ${user.username}
                 </h1>
 
-                <!-- Stats Grid -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <!-- Stats Grid (Bento) -->
+                <div class="bento-grid">
                     
                     <!-- Spending Card -->
-                    <div class="glass-card">
-                        <h3 style="margin-bottom: 0.5rem; opacity: 0.8;">Recent Spending</h3>
-                        <div style="font-size: 2.5rem; font-weight: 900; color: rgb(var(--color-3));">
+                    <div class="stat-card">
+                        <div class="ios-card-header">Recent Spending</div>
+                        <div class="stat-value text-primary">
                             $${spending.reduce((acc, curr) => acc + curr.amount, 0).toFixed(2)}
                         </div>
-                        <p style="opacity: 0.6; font-size: 0.9rem;">Last 5 transactions</p>
+                        <div class="text-caption">Last 5 transactions</div>
                     </div>
 
                     <!-- Wage Card -->
-                    <div class="glass-card">
-                        <h3 style="margin-bottom: 0.5rem; opacity: 0.8;">Hourly Reality</h3>
-                        <div style="font-size: 2.5rem; font-weight: 900; color: rgb(var(--color-1));">
-                            $${user.hourly_wage?.toFixed(2) || '0.00'}/hr
+                    <div class="stat-card">
+                        <div class="ios-card-header">Time Value</div>
+                        <div class="stat-value text-green">
+                            $${user.hourly_wage?.toFixed(2) || '0.00'}
                         </div>
-                        <p style="opacity: 0.6; font-size: 0.9rem;">Your time value</p>
+                        <div class="text-caption">Hourly Reality</div>
                     </div>
 
                 </div>
 
                 <!-- Recent Activity -->
-                <h2 style="margin-bottom: 1.5rem;">Recent Activity</h2>
-                <div class="glass" style="border-radius: 1.5rem; overflow: hidden;">
-                    ${spending.length === 0 ? '<p style="padding: 2rem; text-align: center; opacity: 0.6;">No activity yet.</p>' : `
-                        <div style="display: grid; gap: 1px; background: rgba(255,255,255,0.05);">
-                            ${spending.map(item => `
-                                <div style="display: flex; justify-content: space-between; padding: 1.5rem; background: rgba(15, 23, 42, 0.6);">
-                                    <div>
-                                        <div style="font-weight: bold;">${item.category}</div>
-                                        <div style="font-size: 0.85rem; opacity: 0.6;">${item.description || 'No details'}</div>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div style="font-weight: bold; color: rgb(248, 113, 113);">-$${item.amount.toFixed(2)}</div>
-                                        <div style="font-size: 0.8rem; opacity: 0.6;">${new Date(item.date).toLocaleDateString()}</div>
-                                    </div>
+                <h3 class="ios-card-header" style="margin-left: 1rem; margin-bottom: 0.5rem;">Recent Activity</h3>
+                <div class="ios-list">
+                    ${spending.length === 0 ? '<div style="padding: 1.5rem; text-align: center; color: var(--ios-text-secondary);">No activity yet.</div>' : `
+                        ${spending.map(item => `
+                            <div class="ios-list-item">
+                                <div>
+                                    <div class="text-bold">${item.category}</div>
+                                    <div class="text-caption">${item.description || 'No details'}</div>
                                 </div>
-                            `).join('')}
-                        </div>
+                                <div style="text-align: right;">
+                                    <div class="text-bold text-primary">-$${item.amount.toFixed(2)}</div>
+                                    <div class="text-caption">${new Date(item.date).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        `).join('')}
                     `}
                 </div>
             </div>
