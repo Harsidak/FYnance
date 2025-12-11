@@ -14,6 +14,9 @@ router = APIRouter(
 @router.post("", response_model=MoodSchema)
 def create_mood(mood: MoodCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     data = mood.model_dump()
+    if isinstance(data.get("date"), str):
+        from datetime import date
+        data["date"] = date.fromisoformat(data["date"])
     data = {k: v for k, v in data.items() if v is not None}
     
     db_mood = Mood(**data, user_id=current_user.id)

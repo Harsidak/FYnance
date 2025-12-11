@@ -20,6 +20,10 @@ def create_goal(goal: GoalCreate, db: Session = Depends(get_db), current_user: U
     # But if we want it to be empty, that's fine.
     # However, just safely filtering None for optional fields where we might rely on DB default is safer practice if we change logical defaults.
     # For now, let's keep Goal as is or strictly for consistent style:
+    if isinstance(data.get("deadline"), str):
+        from datetime import date
+        data["deadline"] = date.fromisoformat(data["deadline"])
+
     data = {k: v for k, v in data.items() if v is not None}
     
     db_goal = Goal(**data, user_id=current_user.id)

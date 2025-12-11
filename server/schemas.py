@@ -25,7 +25,7 @@ class SpendingBase(BaseModel):
     amount: float
     category: str
     description: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[Any] = None
 
 class SpendingCreate(SpendingBase):
     pass
@@ -47,7 +47,7 @@ class Spending(BaseModel):
 class MoodBase(BaseModel):
     score: int
     note: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[Any] = None
 
 class MoodCreate(MoodBase):
     pass
@@ -67,7 +67,7 @@ class GoalBase(BaseModel):
     name: str
     target_amount: float
     current_amount: Optional[float] = 0.0
-    deadline: Optional[date] = None
+    deadline: Optional[Any] = None
 
 class GoalCreate(GoalBase):
     pass

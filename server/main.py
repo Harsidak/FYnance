@@ -38,7 +38,7 @@ static_dir = os.path.join(os.path.dirname(__file__), "static")
 if not os.path.exists(static_dir):
     os.makedirs(static_dir)
 
-app.mount("/_next", StaticFiles(directory=os.path.join(static_dir, "_next")), name="next-assets")
+
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Catch-all for SPA (must be last)
@@ -50,12 +50,12 @@ async def catch_all(full_path: str):
     if os.path.exists(file_path) and os.path.isfile(file_path):
         return FileResponse(file_path)
         
-    # Otherwise serve index.html for React Router
+    # Otherwise serve index.html for Client-Side Routing
     index_path = os.path.join(static_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
         
-    return {"error": "Frontend not built. Run build.py"}
+    return {"error": "Frontend not found. Ensure server/static/index.html exists."}
 
 if __name__ == "__main__":
     import uvicorn

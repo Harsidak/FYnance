@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List, Optional
+from typing import List, Optional, Any
 from pydantic import BaseModel
 import httpx
 
@@ -14,7 +14,7 @@ AI_ENGINE_URL = "http://localhost:8001"
 class Transaction(BaseModel):
     amount: float
     category: str
-    timestamp: str
+    timestamp: Optional[Any] = None
 
 class BehaviourInput(BaseModel):
     user_id: int
@@ -33,11 +33,11 @@ class InterventionRequest(BaseModel):
     user_id: int
 
 class SimulationInput(BaseModel):
-    current_balance: float
-    avg_daily_spending: float
-    income_frequency_days: int
-    income_amount: float
-    savings_goal: float
+    current_balance: Optional[float] = 0.0
+    avg_daily_spending: Optional[float] = 0.0
+    income_frequency_days: Optional[int] = 30
+    income_amount: Optional[float] = 0.0
+    savings_goal: Optional[float] = 0.0
 
 # --- Proxy Endpoints ---
 

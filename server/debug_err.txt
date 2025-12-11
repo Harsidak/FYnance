@@ -1,0 +1,610 @@
+Error in create_spending: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 1.0, 'category': 'Transport', 'user_id': 5, 'date': '2025-12-11', 'description': ''}]]
+Traceback (most recent call last):
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Banwa\Desktop\IWT\CODING\PROJECTS\FYNANCE\server\routers\spending.py", line 58, in create_spending
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1288, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1818, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 1.0, 'category': 'Transport', 'user_id': 5, 'date': '2025-12-11', 'description': ''}]]
+
+Error in create_spending: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 1.0, 'category': 'Food', 'user_id': 5, 'date': '2025-12-11', 'description': 'unc'}]]
+Traceback (most recent call last):
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Banwa\Desktop\IWT\CODING\PROJECTS\FYNANCE\server\routers\spending.py", line 58, in create_spending
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1288, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1818, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 1.0, 'category': 'Food', 'user_id': 5, 'date': '2025-12-11', 'description': 'unc'}]]
+
+Error in create_spending: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+Traceback (most recent call last):
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Banwa\Desktop\IWT\CODING\PROJECTS\FYNANCE\server\routers\spending.py", line 58, in create_spending
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1288, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1818, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+
+Error in create_spending: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+Traceback (most recent call last):
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Banwa\Desktop\IWT\CODING\PROJECTS\FYNANCE\server\routers\spending.py", line 58, in create_spending
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1288, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1818, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+
+Error in create_spending: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+Traceback (most recent call last):
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Banwa\Desktop\IWT\CODING\PROJECTS\FYNANCE\server\routers\spending.py", line 58, in create_spending
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 2032, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1313, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 1288, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1818, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\base.py", line 1812, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\engine\default.py", line 1477, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Banwa\anaconda3\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1192, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO spending (user_id, amount, category, description, created_at, date) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'user_id': 5, 'category': 'Food', 'description': 'made ', 'date': '2025-12-11', 'amount': 30.0}]]
+

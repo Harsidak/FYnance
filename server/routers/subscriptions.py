@@ -13,7 +13,12 @@ router = APIRouter(
 
 @router.post("", response_model=SubscriptionSchema)
 def create_subscription(sub: SubscriptionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    db_sub = Subscription(**sub.model_dump(), user_id=current_user.id)
+    data = sub.model_dump()
+    if isinstance(data.get("next_due"), str):
+        from datetime import date
+        data["next_due"] = date.fromisoformat(data["next_due"])
+    
+    db_sub = Subscription(**data, user_id=current_user.id)
     db.add(db_sub)
     db.commit()
     db.refresh(db_sub)

@@ -46,7 +46,10 @@ def create_spending(
         data = spending.model_dump()
         
         # Explicitly handle date default
-        if data.get("date") is None:
+        if isinstance(data.get("date"), str):
+            from datetime import date
+            data["date"] = date.fromisoformat(data["date"])
+        elif data.get("date") is None:
             from datetime import date
             data["date"] = date.today()
         
