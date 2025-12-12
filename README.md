@@ -54,14 +54,21 @@ At its core is **Fin**, an AI agent powered by Google Gemini (via LangChain) tha
 2.  **Install Dependencies**
     ```bash
     pip install -r requirements.txt
-    pip install -r ai_engine/requirements.txt
     ```
 
 3.  **Configure Environment**
-    Create a `.env` file in `ai_engine/` (and/or root depending on setup):
-    ```ini
-    GEMINI_API_KEY=your_api_key_here
-    ```
+    
+    You need a Google API Key for the AI brain to work.
+    
+    1.  **Get a Key**: Go to [Google AI Studio](https://aistudio.google.com/app/apikey) and create a new API key.
+    2.  **Create Config File**:
+        - Navigate to the `ai_engine/` folder.
+        - Create a new file named `.env`.
+        - Paste your key inside like this:
+        ```ini
+        GEMINI_API_KEY=your_actual_api_key_starts_with_AIza...
+        ```
+    > **Note**: Do not put the `.env` file in the root folder; it belongs inside `ai_engine/`.
 
 4.  **Run the System**
     We have a unified build script that launches both the backend and the AI engine.
@@ -86,6 +93,9 @@ FYNANCE/
 ├── build.py             # Unified launcher script
 └── requirements.txt     # Backend dependencies
 ```
+
+## 🤝 Contributing
+We welcome contributions! Please see [CONTRIBUTION.md](./CONTRIBUTION.md) for our roadmap, known bugs, and research context.
 
 ## 🔒 Security Note
 - **API Keys**: Never commit your `.env` file. It is included in `.gitignore`.
