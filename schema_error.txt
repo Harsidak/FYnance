@@ -1,1 +1,0 @@
-[{"type":"none_required","loc":["date"],"msg":"Input should be None","input":"2024-12-11","url":"https://errors.pydantic.dev/2.11/v/none_required"}]

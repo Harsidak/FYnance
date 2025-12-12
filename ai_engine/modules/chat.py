@@ -44,7 +44,7 @@ async def chat_with_buddy(data: ChatRequest):
         # Add System Context
         system_content = f"""
         You are Fin, a Gen-Z Financial Buddy.
-        Style: Casual, emoji-friendly 🚀. 
+        Style: Casual and  emoji-friendly 🚀.  
         Mission: Help users save money and build wealth.
         
         Financial Context / RAG Tips:
