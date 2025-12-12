@@ -1,4 +1,9 @@
 import os
+from dotenv import load_dotenv
+
+# Load .env from the same directory as this config file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 class Settings:
     PROJECT_NAME: str = "FYNANCE AI Engine"
@@ -14,6 +19,6 @@ class Settings:
     VECTOR_DB_PATH: str = "chroma_db/"
     
     # External APIs
-    GEMINI_API_KEY: str = "AIzaSyC5x3SnUdr62tTlLL40oN9M9RuVeGw9peo" # Updated by user
+    GEMINI_API_KEY: str = os.getenv("API_KEY") # Updated by user
 
 settings = Settings()
