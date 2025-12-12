@@ -45,7 +45,7 @@ class SimulationInput(BaseModel):
 async def get_behaviour_prediction(data: BehaviourInput):
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(f"{AI_ENGINE_URL}/predict/behaviour", json=data.model_dump())
+            response = await client.post(f"{AI_ENGINE_URL}/predict/behaviour", json=data.model_dump(), timeout=60.0)
             response.raise_for_status()
             return response.json()
         except httpx.RequestError as exc:
@@ -55,7 +55,7 @@ async def get_behaviour_prediction(data: BehaviourInput):
 async def get_intervention(data: InterventionRequest):
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(f"{AI_ENGINE_URL}/agent/intervene", json=data.model_dump())
+            response = await client.post(f"{AI_ENGINE_URL}/agent/intervene", json=data.model_dump(), timeout=60.0)
             response.raise_for_status()
             return response.json()
         except httpx.RequestError as exc:
@@ -65,7 +65,7 @@ async def get_intervention(data: InterventionRequest):
 async def simulate_future_finances(data: SimulationInput):
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(f"{AI_ENGINE_URL}/simulate/future", json=data.model_dump())
+            response = await client.post(f"{AI_ENGINE_URL}/simulate/future", json=data.model_dump(), timeout=60.0)
             response.raise_for_status()
             return response.json()
         except httpx.RequestError as exc:
@@ -98,7 +98,7 @@ async def chat_interaction(data: ChatRequest):
     
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(f"{AI_ENGINE_URL}/chat/send", json=payload, timeout=30.0)
+            response = await client.post(f"{AI_ENGINE_URL}/chat/send", json=payload, timeout=60.0)
             response.raise_for_status()
             return response.json()
         except httpx.RequestError as exc:

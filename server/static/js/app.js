@@ -5,7 +5,7 @@ import { renderSpending } from './pages/spending.js?v=2';
 import { renderGoals } from './pages/goals.js?v=2';
 import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
-import { renderAI } from './pages/ai.js?v=2';
+import { renderAI } from './pages/ai.js?v=3';
 
 const routes = {
     'auth': renderAuth,

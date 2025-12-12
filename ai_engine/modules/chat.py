@@ -11,10 +11,12 @@ router = APIRouter()
 
 # Configure LangChain Chat Model
 chat_model = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-3-pro-preview",
     google_api_key=settings.GEMINI_API_KEY,
-    temperature=0.7,
-    convert_system_message_to_human=True
+    temperature=0.4,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
 )
 
 class ChatMessage(BaseModel):
