@@ -47,8 +47,8 @@ At its core is **Fin**, an AI agent powered by Google Gemini (via LangChain) tha
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/Harsidak/fynance.git
-    cd fynance
+    git clone https://github.com/Harsidak/FYnance.git
+    cd FYnance
     ```
 
 2.  **Install Dependencies**
