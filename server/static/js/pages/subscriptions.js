@@ -67,7 +67,7 @@ export async function renderSubscriptions(container) {
         }
 
         const totalMonthly = subs.reduce((acc, curr) => {
-            return acc + (curr.billing_cycle === 'Monthly' ? curr.amount : curr.amount / 12);
+            return acc + (curr.billing_cycle === 'Monthly' ? curr.cost : curr.cost / 12);
         }, 0);
 
         listContainer.innerHTML = `
@@ -79,10 +79,10 @@ export async function renderSubscriptions(container) {
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 1rem;">
                     <div>
                         <div style="font-weight: bold;">${s.name}</div>
-                        <div style="font-size: 0.8rem; opacity: 0.6;">Due: ${new Date(s.next_due).toLocaleDateString()}</div>
+                        <div style="font-size: 0.8rem; opacity: 0.6;">Due: ${s.next_due_date ? new Date(s.next_due_date).toLocaleDateString() : 'N/A'}</div>
                     </div>
                     <div style="text-align: right;">
-                        <div style="font-weight: bold;">$${s.amount.toFixed(2)}</div>
+                        <div style="font-weight: bold;">$${s.cost.toFixed(2)}</div>
                         <div style="font-size: 0.8rem; opacity: 0.6;">${s.billing_cycle}</div>
                     </div>
                 </div>
@@ -95,9 +95,9 @@ export async function renderSubscriptions(container) {
         const formData = new FormData(form);
         const payload = {
             name: formData.get('name'),
-            amount: parseFloat(formData.get('amount')),
+            cost: parseFloat(formData.get('amount')),
             billing_cycle: formData.get('billing_cycle'),
-            next_due: formData.get('next_due')
+            next_due_date: formData.get('next_due')
         };
 
         try {

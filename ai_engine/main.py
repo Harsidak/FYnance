@@ -27,13 +27,14 @@ def health_check():
 
 from modules.prediction import router as prediction_router
 from modules.intervention import router as intervention_router
-from modules.rag import router as rag_router
 from modules.simulation import router as simulation_router
 
 app.include_router(prediction_router, tags=["Prediction"])
 app.include_router(intervention_router, tags=["Intervention"])
-app.include_router(rag_router, tags=["RAG"])
 app.include_router(simulation_router, tags=["Simulation"])
+
+from modules.chat import router as chat_router
+app.include_router(chat_router, tags=["Chat"])
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)

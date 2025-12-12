@@ -74,7 +74,7 @@ async def determine_intervention(data: InterventionRequest):
         parsed = json.loads(clean_text)
         
         content = parsed.get("message", "Watch your spending!")
-        action = parsed.get("action", recommended_user_action)
+        action = parsed.get("action", action)
         reason = parsed.get("title", data.trigger_reason) # Use title as the 'reason' or header
         
     except Exception as e:
@@ -82,7 +82,7 @@ async def determine_intervention(data: InterventionRequest):
         # Fallback
         content = f"Notice: {data.trigger_reason}. Watch your spending!"
         reason = data.trigger_reason
-        action = recommended_user_action
+        # action keeps its default value from above
 
     return InterventionResponse(
         intervention_type=i_type,

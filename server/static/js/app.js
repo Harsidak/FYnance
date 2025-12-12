@@ -1,11 +1,11 @@
 
-import { renderAuth } from './pages/auth.js';
-import { renderDashboard } from './pages/dashboard.js';
-import { renderSpending } from './pages/spending.js';
-import { renderGoals } from './pages/goals.js';
-import { renderMood } from './pages/mood.js';
-import { renderSubscriptions } from './pages/subscriptions.js';
-import { renderAI } from './pages/ai.js';
+import { renderAuth } from './pages/auth.js?v=2';
+import { renderDashboard } from './pages/dashboard.js?v=3';
+import { renderSpending } from './pages/spending.js?v=2';
+import { renderGoals } from './pages/goals.js?v=2';
+import { renderMood } from './pages/mood.js?v=2';
+import { renderSubscriptions } from './pages/subscriptions.js?v=3';
+import { renderAI } from './pages/ai.js?v=2';
 
 const routes = {
     'auth': renderAuth,
@@ -42,7 +42,8 @@ export async function api(endpoint, method = 'GET', body = null) {
 
         if (!res.ok) {
             const err = await res.json();
-            throw new Error(err.detail || 'API Error');
+            const msg = typeof err.detail === 'object' ? JSON.stringify(err.detail) : (err.detail || 'API Error');
+            throw new Error(msg);
         }
 
         return await res.json();

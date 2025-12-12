@@ -14,6 +14,6 @@ class Settings:
     VECTOR_DB_PATH: str = "chroma_db/"
     
     # External APIs
-    GEMINI_API_KEY: str = "AIzaSyDaAfDkwSwfFuuI5SY1tjfRH58ROZniqbQ" # Hardcoded for demo, normally env var
+    GEMINI_API_KEY: str = "AIzaSyC5x3SnUdr62tTlLL40oN9M9RuVeGw9peo" # Updated by user
 
 settings = Settings()

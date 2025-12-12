@@ -76,3 +76,30 @@ async def seed_rag():
     async with httpx.AsyncClient() as client:
         await client.get(f"{AI_ENGINE_URL}/rag/seed")
     return {"status": "Seeded RAG knowledge base"}
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    message: str
+    history: Optional[List[ChatMessage]] = []
+
+@router.post("/chat")
+async def chat_interaction(data: ChatRequest):
+    # Fetch User Context (Mock for now, could fetch from DB)
+    context = "User has $1200 balance. Spend trends: High food costs."
+    
+    payload = {
+        "message": data.message,
+        "history": [m.model_dump() for m in data.history],
+        "user_context": context
+    }
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(f"{AI_ENGINE_URL}/chat/send", json=payload, timeout=30.0)
+            response.raise_for_status()
+            return response.json()
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=503, detail=f"AI Engine unavailable: {exc}")

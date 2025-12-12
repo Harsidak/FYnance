@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYnance - VisionOS</title>
     <!-- Cache Busting for Futuristic Design -->
-    <link rel="stylesheet" href="/static/css/style.css?v=vision_os_1">
+    <link rel="stylesheet" href="/static/css/style.css?v=vision_os_4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Using Inter/Outfit is fine, but system font 'SF Pro' is targeted via CSS -->
@@ -32,12 +32,30 @@
                     <span class="logo-text">FYNANCE</span>
                 </a>
                 <div class="nav-items">
-                    <a href="#dashboard" class="nav-item" data-page="dashboard">Dashboard</a>
-                    <a href="#spending" class="nav-item" data-page="spending">Spending</a>
-                    <a href="#goals" class="nav-item" data-page="goals">Goals</a>
-                    <a href="#subscriptions" class="nav-item" data-page="subscriptions">subs</a>
-                    <a href="#mood" class="nav-item" data-page="mood">Mood</a>
-                    <a href="#ai" class="nav-item" data-page="ai">AI</a>
+                    <a href="#dashboard" class="nav-item" data-page="dashboard">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#spending" class="nav-item" data-page="spending">
+                        <i data-lucide="wallet"></i>
+                        <span>Spending</span>
+                    </a>
+                    <a href="#goals" class="nav-item" data-page="goals">
+                        <i data-lucide="target"></i>
+                        <span>Goals</span>
+                    </a>
+                    <a href="#subscriptions" class="nav-item" data-page="subscriptions">
+                        <i data-lucide="credit-card"></i>
+                        <span>Subs</span>
+                    </a>
+                    <a href="#mood" class="nav-item" data-page="mood">
+                        <i data-lucide="smile"></i>
+                        <span>Mood</span>
+                    </a>
+                    <a href="#ai" class="nav-item" data-page="ai">
+                        <i data-lucide="bot"></i>
+                        <span>AI</span>
+                    </a>
                 </div>
                 <button id="logout-btn" class="vision-btn-sm">Logout</button>
             </div>
@@ -49,7 +67,7 @@
         </main>
     </div>
 
-    <script src="/static/js/app.js" type="module"></script>
+    <script src="/static/js/app.js?v=3" type="module"></script>
 </body>
 
 </html>

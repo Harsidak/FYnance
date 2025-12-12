@@ -14,9 +14,11 @@ router = APIRouter(
 @router.post("", response_model=SubscriptionSchema)
 def create_subscription(sub: SubscriptionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     data = sub.model_dump()
-    if isinstance(data.get("next_due"), str):
+    if isinstance(data.get("next_due_date"), str) and data["next_due_date"]:
         from datetime import date
-        data["next_due"] = date.fromisoformat(data["next_due"])
+        data["next_due_date"] = date.fromisoformat(data["next_due_date"])
+    elif data.get("next_due_date") == "":
+        data["next_due_date"] = None
     
     db_sub = Subscription(**data, user_id=current_user.id)
     db.add(db_sub)
