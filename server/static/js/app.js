@@ -6,6 +6,13 @@ import { renderGoals } from './pages/goals.js?v=2';
 import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
 import { renderAI } from './pages/ai.js?v=3';
+import { state } from './state.js'; // if already imported, ignore
+
+// 🔥 RESTORE TOKEN ON PAGE LOAD (SAFARI FIX)
+const savedToken = localStorage.getItem('token');
+if (savedToken) {
+  state.token = savedToken;
+}
 
 const routes = {
     'auth': renderAuth,

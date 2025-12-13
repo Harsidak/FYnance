@@ -1,6 +1,10 @@
 
 import { api, state } from '../app.js';
-
+// Restore token on page reload (FIX auto logout)
+const savedToken = localStorage.getItem('token');
+if (savedToken) {
+  state.token = savedToken;
+}
 export async function renderAuth(container) {
     container.innerHTML = `
         <div class="glass-card" style="max-width: 400px; margin: 4rem auto; text-align: center;">
