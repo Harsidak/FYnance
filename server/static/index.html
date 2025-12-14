@@ -7,21 +7,19 @@
     <title>FYnance - VisionOS</title>
     <!-- Cache Busting for Futuristic Design -->
     <link rel="stylesheet" href="/static/css/style.css?v=vision_os_4">
+    <link rel="stylesheet" href="/static/css/color-bends.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Using Inter/Outfit is fine, but system font 'SF Pro' is targeted via CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
-    <!-- 3D Depth Layers -->
-    <div class="ambient-layer">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
+    <!-- Premium 3D Background -->
+    <div id="color-bends-canvas" class="color-bends-container fixed-bg"></div>
 
     <!-- Glass Overlay -->
     <div id="app" class="app-container">
@@ -67,7 +65,7 @@
         </main>
     </div>
 
-    <script src="/static/js/app.js?v=4" type="module"></script>
+    <script src="/static/js/app.js?v=19" type="module"></script>
 </body>
 
 </html>

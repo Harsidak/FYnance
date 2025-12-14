@@ -141,5 +141,6 @@ async def simulate_future(data: SimulationInput):
             survival_probability=0.5,
             shock_resilience="Unknown",
             waste_audit=0.0,
-            narrative="AI unavailable. Showing standard projection."
+            narrative="AI unavailable. Showing standard projection.",
+            teacher_report="**AI Offline.** Using mathematical projection only."
         )

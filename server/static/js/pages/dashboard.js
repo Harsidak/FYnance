@@ -60,7 +60,7 @@ export async function renderDashboard(container) {
                 <div class="bento-grid" style="margin-bottom: 1.5rem;">
                     
                     <!-- Safety Budget -->
-                    <div class="glass-card-3d" style="background: linear-gradient(135deg, rgba(0, 195, 154, 0.1), transparent);">
+                    <div class="glass-card-3d">
                         <div class="ios-card-header">
                             <i data-lucide="shield" style="width: 16px; margin-right: 8px;"></i> Safe-to-Spend
                         </div>

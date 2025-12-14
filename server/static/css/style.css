@@ -61,9 +61,13 @@
     padding: 0;
 }
 
+html,
 body {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    background-color: transparent !important;
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: rgb(var(--s-charcoal));
     color: rgb(var(--p-white));
     min-height: 100vh;
     overflow-x: hidden;
@@ -138,12 +142,13 @@ body {
     width: auto;
     min-width: 600px;
     padding: 0.75rem 1.5rem;
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Darker nav background */
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 999px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     z-index: 1000;
     display: block;
 }
@@ -267,15 +272,18 @@ body {
 .ios-card,
 .stat-card,
 .vision-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    /* Top light highlight */
+    /* Match glass-card-3d: Darker background for contrast */
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
     padding: 2.5rem;
-    backdrop-filter: blur(var(--blur-strength));
-    -webkit-backdrop-filter: blur(var(--blur-strength));
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+    /* Stronger blur + saturation boost */
+    backdrop-filter: blur(50px) saturate(180%);
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s;
     margin-bottom: 2rem;
     position: relative;
@@ -367,8 +375,10 @@ body {
 }
 
 .vision-btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.5);
+    /* Darker base */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-md);
     color: white;
     cursor: pointer;
@@ -387,14 +397,18 @@ body {
 }
 
 .glass-card-3d {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    /* Significantly darker background for contrast against bright animation */
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
     padding: 2.5rem;
-    backdrop-filter: blur(var(--blur-strength));
-    -webkit-backdrop-filter: blur(var(--blur-strength));
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+    /* Stronger blur + saturation boost to make text pop */
+    backdrop-filter: blur(50px) saturate(180%);
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s;
     margin-bottom: 2rem;
     position: relative;
@@ -454,17 +468,22 @@ body {
 }
 
 .ios-list {
-    background: rgba(255, 255, 255, 0.03);
+    /* Match glass-card-3d style */
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+    backdrop-filter: blur(50px) saturate(180%);
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .ios-list-item {
     display: flex;
     justify-content: space-between;
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Slightly brighter border */
     transition: background 0.2s;
 }
 
@@ -474,6 +493,9 @@ body {
 
 .text-primary {
     color: white;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    /* Glow for brightness */
 }
 
 .text-green {
@@ -483,10 +505,13 @@ body {
 
 .text-bold {
     font-weight: 600;
+    color: #ffffff;
+    /* Pure white */
 }
 
 .text-caption {
-    color: rgba(var(--p-white), 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    /* Boosted from 0.5 to 0.8 for readability */
     font-size: 0.9rem;
 }
 

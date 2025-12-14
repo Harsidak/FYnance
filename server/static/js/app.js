@@ -1,13 +1,17 @@
 import { renderAuth } from './pages/auth.js?v=3';
 import { renderDashboard } from './pages/dashboard.js?v=4';
-import { renderSpending } from './pages/spending.js?v=2';
+import { renderSpending } from './pages/spending.js?v=3';
 import { renderGoals } from './pages/goals.js?v=2';
 import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
 import { renderAI } from './pages/ai.js?v=4';
 import { renderSimulation } from './pages/simulation.js';
+import ColorBends from './components/color-bends.js';
 
 import { state } from './state.js';
+
+// Init Background
+// Init Background (Moved to load event)
 
 // Global State Extension
 state.realityMode = false;
@@ -118,5 +122,23 @@ async function router() {
 window.addEventListener('hashchange', router);
 window.addEventListener('load', () => {
     document.getElementById('logout-btn').addEventListener('click', logout);
+
+    // Init Background
+    const bgContainer = document.getElementById('color-bends-canvas');
+    if (bgContainer) {
+        new ColorBends(bgContainer, {
+            colors: ["#ff5c7a", "#8a5cff", "#00ffd1"],
+            rotation: 0,
+            speed: 0.2,
+            scale: 1,
+            frequency: 1,
+            warpStrength: 1,
+            mouseInfluence: 1,
+            parallax: 0.5,
+            noise: 0.1,
+            transparent: true
+        });
+    }
+
     router();
 });
