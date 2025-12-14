@@ -7,15 +7,28 @@ export async function renderDashboard(container) {
 
     try {
         // Fetch Data Parallel: User, Spending, Trends, AI Prediction
-        const [user, spending, analytics, aiData] = await Promise.all([
+        // 1. Fetch User & Spending Data First
+        const [user, spending, analytics] = await Promise.all([
             api('/auth/me'),
             api('/spending?limit=5'),
-            api('/analytics/spending-trends'),
-            api('/ai/predict', 'POST', { // Fetch AI Prediction
-                spending_history: [], // Backend handles empty history or fetches from DB
-                income: 4000
-            }).catch(() => null) // Fail gracefully if AI is offline
+            api('/analytics/spending-trends')
         ]);
+
+        state.user = user;
+
+        // 2. Fetch AI Prediction with correct context
+        const aiData = await api('/ai/predict', 'POST', {
+            user_id: user.id,
+            transactions: spending.map(t => ({
+                amount: t.amount,
+                category: t.category,
+                timestamp: new Date(t.date).toISOString()
+            })),
+            mood_logs: [] // Optional
+        }).catch(err => {
+            console.warn("AI Offline:", err);
+            return null;
+        });
 
         state.user = user;
 
