@@ -11,11 +11,11 @@ router = APIRouter()
 
 # Configure LangChain Chat Model
 chat_model = ChatGoogleGenerativeAI(
-    model="gemini-3-pro-preview",
+    model="gemini-2.5-flash",
     google_api_key=settings.GEMINI_API_KEY,
     temperature=0.4,
     max_tokens=None,
-    timeout=None,
+    timeout=30,
     max_retries=2,
 )
 
@@ -68,7 +68,18 @@ async def chat_with_buddy(data: ChatRequest):
         # 3. Generate Response
         ai_msg = chat_model.invoke(langchain_history)
         
-        return ChatResponse(response=ai_msg.content)
+        response_content = ai_msg.content
+        if isinstance(response_content, list):
+            # Handle list of content blocks (e.g. from Gemini)
+            full_text = ""
+            for block in response_content:
+                if isinstance(block, dict) and "text" in block:
+                    full_text += block["text"]
+                elif isinstance(block, str):
+                    full_text += block
+            response_content = full_text
+
+        return ChatResponse(response=str(response_content))
 
     except Exception as e:
         print(f"LangChain Error: {e}")

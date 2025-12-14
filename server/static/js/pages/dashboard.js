@@ -1,5 +1,6 @@
 
-import { api, state } from '../app.js';
+import { api } from '../app.js';
+import { state } from '../state.js';
 
 export async function renderDashboard(container) {
     container.innerHTML = '<div class="loading">Initializing Control Center...</div>';

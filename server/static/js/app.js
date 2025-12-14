@@ -1,17 +1,17 @@
 
-import { renderAuth } from './pages/auth.js?v=2';
-import { renderDashboard } from './pages/dashboard.js?v=3';
+import { renderAuth } from './pages/auth.js?v=3';
+import { renderDashboard } from './pages/dashboard.js?v=4';
 import { renderSpending } from './pages/spending.js?v=2';
 import { renderGoals } from './pages/goals.js?v=2';
 import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
-import { renderAI } from './pages/ai.js?v=3';
-import { state } from './state.js'; // if already imported, ignore
+import { renderAI } from './pages/ai.js?v=4';
+
 
 // 🔥 RESTORE TOKEN ON PAGE LOAD (SAFARI FIX)
 const savedToken = localStorage.getItem('token');
 if (savedToken) {
-  state.token = savedToken;
+    state.token = savedToken;
 }
 
 const routes = {
@@ -25,10 +25,8 @@ const routes = {
 };
 
 // Global State
-export const state = {
-    user: null,
-    token: localStorage.getItem('token')
-};
+import { state } from './state.js';
+export { state };
 
 // API Wrapper
 export async function api(endpoint, method = 'GET', body = null) {

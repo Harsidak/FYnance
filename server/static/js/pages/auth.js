@@ -1,9 +1,10 @@
 
-import { api, state } from '../app.js';
+import { api } from '../app.js';
+import { state } from '../state.js';
 // Restore token on page reload (FIX auto logout)
 const savedToken = localStorage.getItem('token');
 if (savedToken) {
-  state.token = savedToken;
+    state.token = savedToken;
 }
 export async function renderAuth(container) {
     container.innerHTML = `
@@ -106,7 +107,7 @@ export async function renderAuth(container) {
                 window.location.hash = '#dashboard';
             }
         } catch (err) {
-            errorMsg.textContent = "Registration failed. Username taken?";
+            errorMsg.textContent = err.message;
         }
     };
 }
