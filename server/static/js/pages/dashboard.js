@@ -8,11 +8,14 @@ export async function renderDashboard(container) {
     try {
         // Fetch Data Parallel: User, Spending, Trends, AI Prediction
         // 1. Fetch User & Spending Data First
-        const [user, spending, analytics] = await Promise.all([
+        // 1. Fetch User & Spending Data First
+        const [user, spending, trends, socialPulse] = await Promise.all([
             api('/auth/me'),
             api('/spending?limit=5'),
-            api('/analytics/spending-trends')
+            api('/analytics/spending-trends'),
+            api('/social/pulse').catch(() => null)
         ]);
+
 
         state.user = user;
 
@@ -65,21 +68,25 @@ export async function renderDashboard(container) {
                         <div class="text-caption">Daily Allowance</div>
                     </div>
 
-                    <!-- Reality Check -->
+                    <!-- Campus Pulse (Social Norms) -->
                     <div class="glass-card-3d">
                         <div class="ios-card-header">
-                            <i data-lucide="clock" style="width: 16px; margin-right: 8px;"></i> Time Cost
+                            <i data-lucide="users" style="width: 16px; margin-right: 8px;"></i> Campus Pulse
                         </div>
-                        <div class="stat-value text-primary">${user.hourly_wage ? '$' + user.hourly_wage : 'N/A'}</div>
-                        <div class="text-caption">Hourly Value</div>
+                        <div class="text-caption" style="margin-top: 5px; color: var(--c-white); line-height: 1.4;">
+                            ${socialPulse ? socialPulse.text : "Syncing peer data..."}
+                        </div>
+                        <div class="text-caption" style="margin-top: 5px; color: ${socialPulse && socialPulse.trend === 'positive' ? 'var(--c-green-neon)' : 'var(--ios-text-secondary)'}">
+                            ${socialPulse ? (socialPulse.trend === 'positive' ? '▲ Positive Trend' : '• Neutral') : ''}
+                        </div>
                     </div>
                 </div>
 
-                <!-- 3. AI Insight Panel -->
+                <!-- 3. AI Insight Panel (Future Self) -->
                 <div class="glass-card-3d" style="margin-bottom: 2rem; border-left: 3px solid var(--c-violet-neon);">
-                    <div class="ios-card-header" style="color: var(--c-violet-neon);">
-                        <i data-lucide="brain-circuit" style="width: 18px; margin-right: 8px;"></i>
-                        Fin.AI Analysis
+                    <div class="ios-card-header" style="color: var(--c-violet-neon); display: flex; justify-content: space-between;">
+                        <span><i data-lucide="brain-circuit" style="width: 18px; margin-right: 8px;"></i> Fin.AI Analysis</span>
+                        <span>${aiData && aiData.future_self_status === 'happy' ? '🤩' : (aiData && aiData.future_self_status === 'stressed' ? '😫' : '😐')}</span>
                     </div>
                     <div style="font-size: 1.1rem; line-height: 1.5; margin-top: 0.5rem;">
                         ${aiData ? aiData.risk_assessment : "Systems initializing... Gather more data for precise prediction."}
@@ -99,6 +106,10 @@ export async function renderDashboard(container) {
                     <button class="vision-btn-secondary" onclick="window.location.hash='#ai'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="message-circle"></i>
                         <span style="font-size: 0.8rem;">Ask Fin</span>
+                    </button>
+                    <button class="vision-btn-secondary" onclick="window.location.hash='#simulation'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
+                         <i data-lucide="play"></i>
+                        <span style="font-size: 0.8rem;">Simulate</span>
                     </button>
                     <button class="vision-btn-secondary" onclick="window.location.hash='#goals'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="target"></i>

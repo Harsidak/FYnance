@@ -26,6 +26,7 @@ class PredictionResponse(BaseModel):
     trigger_reason: str
     recommended_intervention: str
     action: Optional[str] = "Check details"
+    future_self_status: Optional[str] = "neutral" # happy, stressed, neutral
 
 class InterventionRequest(BaseModel):
     risk_score: float
@@ -47,7 +48,18 @@ async def get_behaviour_prediction(data: BehaviourInput):
         try:
             response = await client.post(f"{AI_ENGINE_URL}/predict/behaviour", json=data.model_dump(), timeout=60.0)
             response.raise_for_status()
-            return response.json()
+            response_data = response.json()
+            
+            # Add lightweight Future Self logic here
+            risk = response_data.get("risk_score", 0)
+            if risk < 0.3:
+                response_data["future_self_status"] = "happy"
+            elif risk > 0.7:
+                response_data["future_self_status"] = "stressed"
+            else:
+                response_data["future_self_status"] = "neutral"
+                
+            return response_data
         except httpx.RequestError as exc:
             raise HTTPException(status_code=503, detail=f"AI Engine unavailable: {exc}")
 

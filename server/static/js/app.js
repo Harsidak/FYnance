@@ -1,4 +1,3 @@
-
 import { renderAuth } from './pages/auth.js?v=3';
 import { renderDashboard } from './pages/dashboard.js?v=4';
 import { renderSpending } from './pages/spending.js?v=2';
@@ -6,7 +5,13 @@ import { renderGoals } from './pages/goals.js?v=2';
 import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
 import { renderAI } from './pages/ai.js?v=4';
+import { renderSimulation } from './pages/simulation.js';
 
+import { state } from './state.js';
+
+// Global State Extension
+state.realityMode = false;
+export { state };
 
 // 🔥 RESTORE TOKEN ON PAGE LOAD (SAFARI FIX)
 const savedToken = localStorage.getItem('token');
@@ -21,12 +26,9 @@ const routes = {
     'goals': renderGoals,
     'mood': renderMood,
     'subscriptions': renderSubscriptions,
-    'ai': renderAI
+    'ai': renderAI,
+    'simulation': renderSimulation
 };
-
-// Global State
-import { state } from './state.js';
-export { state };
 
 // API Wrapper
 export async function api(endpoint, method = 'GET', body = null) {

@@ -24,42 +24,22 @@ export async function renderAI(container) {
                     </div>
                 </div>
 
-                <!-- Future Simulation -->
-                <div class="glass-card">
-                    <h2 style="margin-bottom: 1rem;">Future Simulator</h2>
-                    <p style="opacity: 0.7; margin-bottom: 1.5rem;">Project your finances 6 months into the future.</p>
+                <!-- Future Simulation Redirection -->
+                <div class="glass-card" style="background: linear-gradient(135deg, rgba(0, 195, 154, 0.1), transparent); border: 1px solid var(--c-green-neon);">
+                    <h2 style="margin-bottom: 1rem;">Future Simulator V2</h2>
+                    <p style="opacity: 0.8; margin-bottom: 1.5rem; color: var(--c-white);">
+                        Experience the new AI-Powered Financial Time Machine. 
+                        See detailed 30-day analytics, survival probabilities, and shock resilience models.
+                    </p>
                     
-                    <form id="sim-form" style="display: grid; gap: 1rem;">
-                        <div>
-                            <label style="font-weight: bold; font-size: 0.8rem;">Current Balance</label>
-                            <input type="number" name="current_balance" class="glass-input" value="1000">
-                        </div>
-                        <div>
-                            <label style="font-weight: bold; font-size: 0.8rem;">Avg Monthly Spend</label>
-                            <input type="number" name="avg_daily_spending" class="glass-input" value="30"> <!-- Backend name is confusing, using day/month logic here? API expects daily avg -->
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                             <div>
-                                <label style="font-weight: bold; font-size: 0.8rem;">Income</label>
-                                <input type="number" name="income_amount" class="glass-input" value="3000">
-                             </div>
-                             <div>
-                                <label style="font-weight: bold; font-size: 0.8rem;">Freq (Days)</label>
-                                <input type="number" name="income_frequency_days" class="glass-input" value="30">
-                             </div>
-                        </div>
-                        <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, rgb(var(--color-3)), rgb(var(--color-1)));">Run Simulation</button>
-                    </form>
+                    <button id="go-to-sim" class="btn-primary" style="background: var(--c-green-neon); color: black; font-weight: bold;">
+                        <i data-lucide="play-circle" style="width: 18px; margin-right: 8px; vertical-align: middle;"></i>
+                        Launch Simulator
+                    </button>
                 </div>
             </div>
 
-            <!-- Simulation Result -->
-            <div id="sim-result" class="glass-card hidden" style="margin-top: 2rem;">
-                <h3 style="margin-bottom: 1rem;">Projected Balance (6 Months)</h3>
-                <div style="display: flex; overflow-x: auto; gap: 1px; height: 200px; align-items: end; padding-bottom: 1rem;">
-                    <!-- Bars injected here -->
-                </div>
-            </div>
+            <!-- Removed Legacy Simulation Result Container -->
         </div>
             
             <!-- AI Chatbot Buddy -->
@@ -135,37 +115,9 @@ export async function renderAI(container) {
     };
 
     // 2. Simulation
-    const simForm = document.getElementById('sim-form');
-    const simResult = document.getElementById('sim-result');
-
-    simForm.onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(simForm);
-        const payload = {
-            current_balance: parseFloat(formData.get('current_balance')),
-            avg_daily_spending: parseFloat(formData.get('avg_daily_spending')), // This input was labeled Monthly on UI but ID suggests daily? Let's assume user inputs simpler number
-            income_frequency_days: parseInt(formData.get('income_frequency_days')),
-            income_amount: parseFloat(formData.get('income_amount')),
-            savings_goal: 0 // Optional
-        };
-
-        try {
-            const res = await api('/ai/simulate', 'POST', payload);
-
-            simResult.classList.remove('hidden');
-            const container = simResult.querySelector('div');
-            // Backend returns 30-day forecast, accessing current path
-            const balances = res.thirty_day_forecast.current;
-            const max = Math.max(...balances);
-
-            container.innerHTML = balances.map((b, i) => `
-                <div style="flex: 1; min-width: 10px; background: rgba(var(--color-2), 0.5); height: ${(b / max) * 100}%; position: relative; border-top-left-radius: 4px; border-top-right-radius: 4px;" title="Day ${i + 1}: $${b.toFixed(0)}">
-                </div>
-            `).join('');
-
-        } catch (err) {
-            alert("Simulation Failed: " + err.message);
-        }
+    // 2. Simulation Redirect
+    document.getElementById('go-to-sim').onclick = () => {
+        window.location.hash = '#simulation';
     };
 
     // 3. AI Chatbot

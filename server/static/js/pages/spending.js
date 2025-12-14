@@ -41,8 +41,13 @@ export async function renderSpending(container) {
                 </form>
             </div>
 
-            <!-- List -->
-            <h3 class="ios-card-header" style="margin-left: 1rem; margin-bottom: 0.5rem;">History</h3>
+    <!-- List Header & Toggle -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-left: 1rem; margin-right: 1rem; margin-bottom: 0.5rem;">
+                <h3 class="ios-card-header" style="margin: 0;">History</h3>
+                <button id="toggle-reality" class="text-caption" style="background: none; border: 1px solid var(--ios-text-secondary); padding: 2px 8px; result: 4px; color: var(--ios-text-secondary);">
+                    ${state.realityMode ? '⏳ Time Cost' : '💲 Cash'}
+                </button>
+            </div>
             <div id="spending-list" class="ios-list">
                 <div class="loading">Loading entries...</div>
             </div>
@@ -51,6 +56,14 @@ export async function renderSpending(container) {
 
     const form = document.getElementById('spending-form');
     const listContainer = document.getElementById('spending-list');
+
+    // Toggle Reality Mode
+    document.getElementById('toggle-reality').onclick = (e) => {
+        state.realityMode = !state.realityMode;
+        e.target.innerText = state.realityMode ? '⏳ Time Cost' : '💲 Cash';
+        // Reload list to apply new mode
+        loadSpending();
+    };
 
     // Load Data
     const loadSpending = async () => {
@@ -68,18 +81,32 @@ export async function renderSpending(container) {
             return;
         }
 
-        listContainer.innerHTML = data.map(item => `
+        const hourlyWage = state.user?.hourly_wage || 15; // Default fallback
+
+        listContainer.innerHTML = data.map(item => {
+            let displayAmount;
+            let displayColor = 'text-primary';
+
+            if (state.realityMode) {
+                const hours = item.amount / hourlyWage;
+                displayAmount = `${hours.toFixed(1)} hrs`;
+                displayColor = 'var(--c-violet-neon)';
+            } else {
+                displayAmount = `-$${item.amount.toFixed(2)}`;
+            }
+
+            return `
             <div class="ios-list-item">
                 <div>
                     <div class="text-bold">${item.category}</div>
                     <div class="text-caption">${item.description || '-'}</div>
                 </div>
                 <div style="text-align: right;">
-                    <div class="text-bold text-primary">-$${item.amount.toFixed(2)}</div>
+                    <div class="text-bold" style="color: ${displayColor};">${displayAmount}</div>
                     <div class="text-caption">${new Date(item.date).toLocaleDateString()}</div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     };
 
     // Handle Submit
