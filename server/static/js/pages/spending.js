@@ -5,46 +5,46 @@ import { api } from '../api.js';
 export async function renderSpending(container) {
     container.innerHTML = `
         <div>
-            <h1 class="page-title">Spending Log</h1>
+            <h1 class="page-title">${state.t('monthly_spending')}</h1>
             
             <!-- Add Entry Form (Inset Grouped) -->
             <div class="ios-card">
-                <div class="ios-card-header">New Expense</div>
+                <div class="ios-card-header">${state.t('log_new_expense')}</div>
                 <form id="spending-form" class="ios-form">
                     <div class="ios-input-group">
-                        <label class="ios-label">Amount</label>
-                        <input type="number" step="0.01" name="amount" class="ios-input" placeholder="$0.00" required>
+                        <label class="ios-label">${state.t('amount')}</label>
+                        <input type="number" step="0.01" name="amount" class="ios-input" placeholder="${state.currencySymbols[state.currency]}0.00" required>
                     </div>
                     
                     <div class="ios-input-group">
-                        <label class="ios-label">Category</label>
+                        <label class="ios-label">${state.t('category')}</label>
                         <select name="category" class="ios-input" required style="background: transparent; color: var(--ios-text);">
-                            <option value="Food" style="color: black;">Food</option>
-                            <option value="Transport" style="color: black;">Transport</option>
-                            <option value="Entertainment" style="color: black;">Entertainment</option>
-                            <option value="Shopping" style="color: black;">Shopping</option>
-                            <option value="Utilities" style="color: black;">Utilities</option>
-                            <option value="Other" style="color: black;">Other</option>
+                            <option value="Food" style="color: black;">${state.t('cat_food')}</option>
+                            <option value="Transport" style="color: black;">${state.t('cat_transport')}</option>
+                            <option value="Entertainment" style="color: black;">${state.t('cat_entertainment')}</option>
+                            <option value="Shopping" style="color: black;">${state.t('cat_shopping')}</option>
+                            <option value="Utilities" style="color: black;">${state.t('cat_utilities')}</option>
+                            <option value="Other" style="color: black;">${state.t('cat_other')}</option>
                         </select>
                     </div>
 
                     <div class="ios-input-group">
-                        <label class="ios-label">Description</label>
+                        <label class="ios-label">${state.t('description')}</label>
                         <input type="text" name="description" class="ios-input" placeholder="e.g. Lunch at Joe's">
                     </div>
 
                     <div class="ios-input-group" style="border-bottom: none;">
-                        <label class="ios-label">Date</label>
+                        <label class="ios-label">${state.t('date')}</label>
                         <input type="date" name="date" class="ios-input" required value="${new Date().toISOString().split('T')[0]}">
                     </div>
 
-                    <button type="submit" class="ios-btn">Add Expense</button>
+                    <button type="submit" class="ios-btn">${state.t('add_expense')}</button>
                 </form>
             </div>
 
     <!-- List Header & Toggle -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-left: 1rem; margin-right: 1rem; margin-bottom: 0.5rem;">
-                <h3 class="ios-card-header" style="margin: 0;">History</h3>
+                <h3 class="ios-card-header" style="margin: 0;">${state.t('history')}</h3>
                 <button id="toggle-reality" class="text-caption" style="background: none; border: 1px solid var(--ios-text-secondary); padding: 2px 8px; result: 4px; color: var(--ios-text-secondary);">
                     ${state.realityMode ? '⏳ Time Cost' : '💲 Cash'}
                 </button>
@@ -78,7 +78,7 @@ export async function renderSpending(container) {
 
     const renderList = (data) => {
         if (!data.length) {
-            listContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">No expenses found.</div>';
+            listContainer.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--ios-text-secondary);">${state.t('no_data')}</div>`;
             return;
         }
 
@@ -96,7 +96,8 @@ export async function renderSpending(container) {
                 displayAmount = `${hours.toFixed(1)} hrs`;
                 displayColor = 'var(--c-violet-neon)';
             } else {
-                displayAmount = `-$${item.amount.toFixed(2)}`;
+                // Format currency handles conversion
+                displayAmount = `-${state.formatCurrency(item.amount)}`;
             }
 
             return `
@@ -118,7 +119,7 @@ export async function renderSpending(container) {
         e.preventDefault();
         const formData = new FormData(form);
         const payload = {
-            amount: parseFloat(formData.get('amount')),
+            amount: state.convertToUSD(parseFloat(formData.get('amount'))),
             category: formData.get('category'),
             description: formData.get('description') || "",
             date: formData.get('date')

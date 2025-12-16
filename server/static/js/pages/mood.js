@@ -1,19 +1,20 @@
 
 import { api } from '../api.js';
+import { state } from '../state.js';
 
 export async function renderMood(container) {
     container.innerHTML = `
         <div>
-            <h1 class="page-title">Mood Tracker</h1>
+            <h1 class="page-title">${state.t('mood_tracker')}</h1>
             
             <div style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                 
                 <!-- Log Today's Mood -->
                 <div class="glass-card">
-                    <h2 style="margin-bottom: 1.5rem;">How are you feeling?</h2>
+                    <h2 style="margin-bottom: 1.5rem;">${state.t('log_mood')}</h2>
                     <form id="mood-form">
                         <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Mood Score (1-10)</label>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('mood_score')}</label>
                             <div style="display: flex; justify-content: space-between; gap: 0.5rem;">
                                 ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(s => `
                                     <label style="cursor: pointer; flex: 1;">
@@ -35,24 +36,24 @@ export async function renderMood(container) {
                         </div>
 
                         <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Note (Optional)</label>
-                            <textarea name="note" class="glass-input" rows="3" placeholder="What happened today?"></textarea>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('note')}</label>
+                            <textarea name="note" class="glass-input" rows="3" placeholder="${state.t('note')}..."></textarea>
                         </div>
                          
                         <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Date</label>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('date')}</label>
                             <input type="date" name="date" class="glass-input" value="${new Date().toISOString().split('T')[0]}">
                         </div>
 
-                        <button type="submit" class="btn-primary">Log Mood</button>
+                        <button type="submit" class="btn-primary">${state.t('log_entry')}</button>
                     </form>
                 </div>
 
                 <!-- Mood History -->
                 <div class="glass-card">
-                    <h2 style="margin-bottom: 1.5rem;">Recent Logs</h2>
+                    <h2 style="margin-bottom: 1.5rem;">${state.t('mood_history')}</h2>
                     <div id="mood-list" style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div class="loading">Loading history...</div>
+                        <div class="loading">Loading...</div>
                     </div>
                 </div>
 
@@ -74,7 +75,7 @@ export async function renderMood(container) {
 
     const renderList = (moods) => {
         if (!moods.length) {
-            listContainer.innerHTML = '<p style="opacity: 0.6; text-align: center;">No mood logs yet.</p>';
+            listContainer.innerHTML = `<p style="opacity: 0.6; text-align: center;">${state.t('no_data')}</p>`;
             return;
         }
 

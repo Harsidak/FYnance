@@ -11,7 +11,7 @@ router = APIRouter()
 
 # Configure LangChain Chat Model
 chat_model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-2.0-flash-exp",
     google_api_key=settings.GEMINI_API_KEY,
     temperature=0.4,
     max_tokens=None,
@@ -27,6 +27,7 @@ class ChatRequest(BaseModel):
     message: str
     history: Optional[List[ChatMessage]] = []
     user_context: Optional[str] = ""
+    language: Optional[str] = "en"
 
 class ChatResponse(BaseModel):
     response: str
@@ -49,6 +50,10 @@ async def chat_with_buddy(data: ChatRequest):
             user_context=data.user_context
         )
         langchain_history.append(SystemMessage(content=system_content))
+        
+        # Enforce Language
+        if data.language and data.language != "en":
+            langchain_history.append(SystemMessage(content=f"IMPORTANT: You MUST reply to the user in {data.language} (Language Code). Translate all concepts naturally."))
         
         # Add Conversation History
         for msg in data.history:

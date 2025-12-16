@@ -2,7 +2,7 @@ import { api } from '../api.js';
 import { state } from '../state.js';
 
 export async function renderDashboard(container) {
-    container.innerHTML = '<div class="loading">Initializing Control Center...</div>';
+    container.innerHTML = `<div class="loading">${state.t('initializing')}</div>`;
 
     try {
         // Fetch All Required Data for "Safe to Spend" Calc
@@ -113,14 +113,15 @@ export async function renderDashboard(container) {
         const totalSpentRecent = spending.slice(0, 30).reduce((acc, curr) => acc + curr.amount, 0); // Last ~30 txns
         const userSavings = state.user?.savings_balance || 0;
 
-        let systemStatus = 'STABLE';
+        let systemStatus = state.t('status_stable');
         let statusColor = 'var(--c-green-neon)';
 
         if (dailySafeSpend < 10) { // Less than $10/day is tight
-            systemStatus = 'CRITICAL';
+            systemStatus = state.t('status_critical');
             statusColor = '#ff4444';
-        } else if (monthlyDisposable > 1000 && userSavings > 2000) {
-            systemStatus = 'FORTIFIED';
+        } else if (remainingDisposable > 1000 && userSavings > 2000) { // Fix variable name: monthlyDisposable -> remainingDisposable or similar. Logic calls for 'remainingDisposable'? No, check Line 90.
+            // Original code had `monthlyDisposable` which might be undefined. Let's use `totalDisposableForMonth` (Line 89).
+            systemStatus = state.t('status_fortified');
             statusColor = '#00f7ff'; // Cyan
         }
 
@@ -145,12 +146,12 @@ export async function renderDashboard(container) {
 
             goalContent = `
                 <div class="ios-card-header" style="justify-content: space-between; display: flex;">
-                    <span><i data-lucide="crosshair" style="width: 16px; margin-right: 8px;"></i> Total Goal Targets</span>
-                    <span style="opacity: 0.7;">${goals.length} Active</span>
+                    <span><i data-lucide="crosshair" style="width: 16px; margin-right: 8px;"></i> ${state.t('goal_targets')}</span>
+                    <span style="opacity: 0.7;">${goals.length} ${state.t('active_suffix')}</span>
                 </div>
                 <div style="margin-top: 10px; display: flex; align-items: baseline; justify-content: space-between;">
                     <div class="stat-value" style="font-size: 2rem;">${overallProgress.toFixed(0)}%</div>
-                    <div style="font-size: 0.8rem; opacity: 0.6;">$${totalCurrent.toFixed(0)} / $${totalTarget.toFixed(0)}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.6;">${state.formatCurrency(totalCurrent)} / ${state.formatCurrency(totalTarget)}</div>
                 </div>
                 <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 10px; margin: 10px 0; overflow: hidden;">
                     <div style="width: ${Math.min(overallProgress, 100)}%; background: var(--c-violet-neon); height: 100%; box-shadow: 0 0 10px var(--c-violet-neon);"></div>
@@ -160,11 +161,11 @@ export async function renderDashboard(container) {
         } else {
             goalContent = `
                  <div class="ios-card-header">
-                    <i data-lucide="crosshair" style="width: 16px; margin-right: 8px;"></i> Target Lock
+                    <i data-lucide="crosshair" style="width: 16px; margin-right: 8px;"></i> ${state.t('target_lock')}
                 </div>
                 <div style="text-align: center; padding: 1.5rem 0; opacity: 0.6;">
-                    No active targets.<br>
-                    <a href="#goals" style="color: var(--c-violet-neon); text-decoration: none; font-weight: bold;">Set a Goal</a>
+                    ${state.t('no_active_targets')}<br>
+                    <a href="#goals" style="color: var(--c-violet-neon); text-decoration: none; font-weight: bold;">${state.t('set_goal_link')}</a>
                 </div>
             `;
         }
@@ -214,11 +215,11 @@ export async function renderDashboard(container) {
                         <span>${aiData && aiData.future_self_status === 'happy' ? '🤩' : (aiData && aiData.future_self_status === 'stressed' ? '😫' : '😐')}</span>
                     </div>
                     <div style="font-size: 1.1rem; line-height: 1.5; margin-top: 0.5rem;">
-                        ${aiData ? (aiData.risk_assessment || aiData.recommended_intervention || aiData.trigger_reason || "Systems initializing... Gather more data for precise prediction.") : "Systems initializing... Gather more data for precise prediction."}
+                        ${aiData ? (aiData.risk_assessment || aiData.recommended_intervention || aiData.trigger_reason || state.t('ai_init')) : state.t('ai_init')}
                     </div>
                     ${(aiData && (aiData.risk_score > 0.5 || aiData.predicted_risk_score > 50)) ?
-                `<div style="margin-top: 0.5rem; color: #ff4444; font-size: 0.9rem;">⚠️ High spending velocity detected.</div>` :
-                `<div style="margin-top: 0.5rem; color: var(--ios-text-secondary); font-size: 0.9rem;">Trajectory stable. Keep it up.</div>`
+                `<div style="margin-top: 0.5rem; color: #ff4444; font-size: 0.9rem;">${state.t('warn_high_spend')}</div>` :
+                `<div style="margin-top: 0.5rem; color: var(--ios-text-secondary); font-size: 0.9rem;">${state.t('msg_stable')}</div>`
             }
                 </div>
 

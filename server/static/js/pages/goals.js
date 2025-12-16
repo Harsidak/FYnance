@@ -1,5 +1,6 @@
 
 import { api } from '../api.js';
+import { state } from '../state.js';
 
 export async function renderGoals(container) {
     let editingGoalId = null; // State to track if we are editing a goal
@@ -7,28 +8,28 @@ export async function renderGoals(container) {
     // Render the container structure first
     container.innerHTML = `
         <div class="fade-in">
-            <h1 class="page-title">Savings Goals</h1>
+            <h1 class="page-title">${state.t('savings_goals')}</h1>
             
             <!-- Create/Edit Goal Form -->
             <div class="glass-card" style="margin-bottom: 3rem; background: linear-gradient(135deg, rgba(var(--color-1), 0.1), rgba(var(--color-3), 0.1));">
-                <h2 id="form-title" style="margin-bottom: 1.5rem;">Create New Goal</h2>
+                <h2 id="form-title" style="margin-bottom: 1.5rem;">${state.t('create_new_goal')}</h2>
                 <form id="goal-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;">
                     <div>
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Goal Name</label>
-                        <input type="text" id="goal-name" name="name" class="glass-input" placeholder="e.g. New Laptop" required>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('goal_name')}</label>
+                        <input type="text" id="goal-name" name="name" class="glass-input" placeholder="${state.t('goal_placeholder')}" required>
                     </div>
                     <div>
-                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Target Amount ($)</label>
+                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('target_amount')} (${state.currencySymbols[state.currency]})</label>
                         <input type="number" id="goal-target" step="0.01" name="target_amount" class="glass-input" required>
                     </div>
                     <div>
-                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Deadline (Optional)</label>
+                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">${state.t('deadline')} (${state.t('optional')})</label>
                         <input type="date" id="goal-deadline" name="deadline" class="glass-input">
                     </div>
                     
                     <div style="display: flex; gap: 1rem;">
-                        <button type="submit" id="submit-btn" class="btn-primary" style="margin-top: 0; flex: 1;">Create Goal</button>
-                         <button type="button" id="cancel-edit-btn" class="nav-btn" style="display: none; flex: 1; text-align: center;">Cancel</button>
+                        <button type="submit" id="submit-btn" class="btn-primary" style="margin-top: 0; flex: 1;">${state.t('create_goal')}</button>
+                         <button type="button" id="cancel-edit-btn" class="nav-btn" style="display: none; flex: 1; text-align: center;">${state.t('cancel')}</button>
                     </div>
                 </form>
             </div>
@@ -54,12 +55,12 @@ export async function renderGoals(container) {
     const resetFormState = () => {
         editingGoalId = null;
         form.reset();
-        formTitle.textContent = "Create New Goal";
-        submitBtn.textContent = "Create Goal";
+        formTitle.textContent = state.t('create_new_goal');
+        submitBtn.textContent = state.t('create_goal');
         cancelEditBtn.style.display = 'none';
     };
 
-    cancelEditBtn.onclick = resetFormState;
+    if (cancelEditBtn) cancelEditBtn.onclick = resetFormState;
 
     const loadGoals = async () => {
         try {
@@ -86,7 +87,7 @@ export async function renderGoals(container) {
                         <div>
                             <h3 style="font-size: 1.5rem; font-weight: bold;">${goal.name}</h3>
                             <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.2rem;">
-                                ${goal.deadline ? `Due: ${new Date(goal.deadline).toLocaleDateString()}` : 'No deadline'}
+                                ${goal.deadline ? `Due: ${new Date(goal.deadline).toLocaleDateString(state.language)}` : 'No deadline'}
                             </p>
                         </div>
                         <div style="display: flex; gap: 0.5rem; align-items: center;">
@@ -106,8 +107,8 @@ export async function renderGoals(container) {
                     </div>
 
                     <div style="margin-bottom: 0.5rem; display: flex; align-items: baseline; gap: 0.5rem;">
-                        <span style="font-size: 2rem; font-weight: 900; color: rgb(var(--color-1));">$${goal.current_amount.toFixed(0)}</span>
-                        <span style="opacity: 0.6;"> / $${goal.target_amount.toFixed(0)}</span>
+                        <span style="font-size: 2rem; font-weight: 900; color: rgb(var(--color-1));">${state.formatCurrency(goal.current_amount)}</span>
+                        <span style="opacity: 0.6;"> / ${state.formatCurrency(goal.target_amount)}</span>
                     </div>
 
                     <!-- Progress Bar -->
@@ -116,11 +117,12 @@ export async function renderGoals(container) {
                     </div>
 
                     <div style="margin-top: auto;">
-                         <button class="nav-btn w-full add-funds-btn" data-id="${goal.id}" style="width: 100%; text-align: center;">+ Add Funds</button>
+                         <button class="nav-btn w-full add-funds-btn" data-id="${goal.id}" style="width: 100%; text-align: center;">+ ${state.t('add_funds')}</button>
                     </div>
                 </div>
             `;
         }).join('');
+
 
 
         if (window.lucide) window.lucide.createIcons();
@@ -133,7 +135,7 @@ export async function renderGoals(container) {
                 const amount = prompt("How much would you like to add?");
                 if (!amount) return;
                 try {
-                    await api(`/goals/${btn.dataset.id}?amount_added=${parseFloat(amount)}`, 'PUT');
+                    await api(`/goals/${btn.dataset.id}?amount_added=${state.convertToUSD(parseFloat(amount))}`, 'PUT');
                     loadGoals();
                 } catch (err) {
                     alert("Failed to update: " + err.message);
@@ -167,12 +169,12 @@ export async function renderGoals(container) {
                 if (!goal) return;
 
                 editingGoalId = goalId;
-                formTitle.textContent = "Edit Goal";
-                submitBtn.textContent = "Update Goal";
+                formTitle.textContent = state.t('edit');
+                submitBtn.textContent = state.t('update');
                 cancelEditBtn.style.display = 'block';
 
                 nameInput.value = goal.name;
-                targetInput.value = goal.target_amount;
+                targetInput.value = state.convertFromUSD(goal.target_amount).toFixed(2);
                 deadlineInput.value = goal.deadline || '';
 
                 // Scroll to top
@@ -188,7 +190,7 @@ export async function renderGoals(container) {
         // Basic payload
         const payload = {
             name: formData.get('name'),
-            target_amount: parseFloat(formData.get('target_amount')),
+            target_amount: state.convertToUSD(parseFloat(formData.get('target_amount'))),
             deadline: formData.get('deadline') || null
         };
 

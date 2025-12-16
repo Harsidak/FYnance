@@ -87,74 +87,93 @@ def get_messages(session_id: int, db: Session = Depends(get_db), current_user: U
     return db.query(ChatMessage).filter(ChatMessage.session_id == session_id).order_by(ChatMessage.created_at.asc()).all()
 
 @router.post("/sessions/{session_id}/message", response_model=ChatMessageResponse)
+@router.post("/sessions/{session_id}/message", response_model=ChatMessageResponse)
 async def send_message(session_id: int, message_data: ChatMessageRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # 1. Verify Session
-    session = db.query(ChatSession).filter(ChatSession.id == session_id, ChatSession.user_id == current_user.id).first()
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    # 2. Save User Message
-    user_msg = ChatMessage(session_id=session_id, role="user", content=message_data.message)
-    db.add(user_msg)
-    
-    # 3. Aggregate Context
-    goals = db.query(Goal).filter(Goal.user_id == current_user.id).all()
-    subs = db.query(Subscription).filter(Subscription.user_id == current_user.id).all()
-    recent_spending = db.query(Spending).filter(Spending.user_id == current_user.id).order_by(Spending.date.desc()).limit(10).all()
-    
-    context = f"""
-    User Profile:
-    - Primary Income: ${current_user.primary_income}
-    - Secondary Income: ${current_user.secondary_income}
-    - Total Monthly: ${current_user.monthly_income}
-    - Income Stability: {current_user.income_stability}
-    - Savings Balance: ${current_user.savings_balance}
-    - Emergency Fund: ${current_user.emergency_fund}
-    - Investments: ${current_user.investments}
-    
-    Active Goals:
-    {chr(10).join([f"- {g.name}: ${g.current_amount}/${g.target_amount} (Due: {g.deadline})" for g in goals])}
-    
-    Subscriptions:
-    {chr(10).join([f"- {s.name}: ${s.cost} ({s.billing_cycle})" for s in subs])}
-    
-    Recent Spending:
-    {chr(10).join([f"- {s.category}: ${s.amount} ({s.description})" for s in recent_spending])}
-    """
-    
-    # 4. Fetch History for Context Window
-    history_msgs = db.query(ChatMessage).filter(ChatMessage.session_id == session_id).order_by(ChatMessage.created_at.asc()).limit(20).all()
-    history_payload = [{"role": m.role, "content": m.content} for m in history_msgs]
-
-    # 5. Call AI Engine
-    ai_payload = {
-        "message": message_data.message,
-        "history": history_payload,
-        "user_context": context,
-        "language": message_data.language or "en"
-    }
-    
-    ai_response_text = "I'm having trouble reaching my brain servers."
-    
-    async with httpx.AsyncClient() as client:
+    try:
+        # 1. Verify Session
+        session = db.query(ChatSession).filter(ChatSession.id == session_id, ChatSession.user_id == current_user.id).first()
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # 2. Save User Message
+        user_msg = ChatMessage(session_id=session_id, role="user", content=message_data.message)
+        db.add(user_msg)
+        db.commit() # Commit early to save user message
+        db.refresh(user_msg) # Ensure we have the ID/timestamp
+        
+        # 3. Aggregate Context
         try:
-            # We use the existing AI Engine chat endpoint but passed with rich context
-            response = await client.post(f"{AI_ENGINE_URL}/chat/send", json=ai_payload, timeout=60.0)
-            if response.status_code == 200:
-                ai_response_text = response.json().get("response", "")
-            else:
-                ai_response_text = f"Connection Error: {response.text}"
-        except Exception as e:
-            ai_response_text = f"AI Error: {str(e)}"
+            goals = db.query(Goal).filter(Goal.user_id == current_user.id).all()
+            subs = db.query(Subscription).filter(Subscription.user_id == current_user.id).all()
+            recent_spending = db.query(Spending).filter(Spending.user_id == current_user.id).order_by(Spending.date.desc()).limit(10).all()
             
-    # 6. Save AI Response
-    ai_msg = ChatMessage(session_id=session_id, role="assistant", content=ai_response_text)
-    db.add(ai_msg)
-    
-    # Update Session Timestamp
-    session.updated_at = datetime.now()
-    
-    db.commit()
-    db.refresh(ai_msg)
-    
-    return ai_msg
+            context = f"""
+            User Profile:
+            - Primary Income: ${getattr(current_user, 'primary_income', 0)}
+            - Secondary Income: ${getattr(current_user, 'secondary_income', 0)}
+            - Total Monthly: ${getattr(current_user, 'monthly_income', 0)}
+            - Income Stability: {getattr(current_user, 'income_stability', 'Unknown')}
+            - Savings Balance: ${getattr(current_user, 'savings_balance', 0)}
+            - Emergency Fund: ${getattr(current_user, 'emergency_fund', 0)}
+            - Investments: ${getattr(current_user, 'investments', 0)}
+            
+            Active Goals:
+            {chr(10).join([f"- {g.name}: ${g.current_amount}/${g.target_amount} (Due: {g.deadline})" for g in goals])}
+            
+            Subscriptions:
+            {chr(10).join([f"- {s.name}: ${s.cost} ({s.billing_cycle})" for s in subs])}
+            
+            Recent Spending:
+            {chr(10).join([f"- {s.category}: ${s.amount} ({s.description})" for s in recent_spending])}
+            """
+        except Exception as ctx_err:
+            print(f"Context Generation Error: {ctx_err}")
+            context = "Error retrieving financial context. Proceed with general advice."
+
+        # 4. Fetch History for Context Window
+        history_msgs = db.query(ChatMessage).filter(ChatMessage.session_id == session_id).order_by(ChatMessage.created_at.asc()).limit(20).all()
+        history_payload = [{"role": m.role, "content": m.content} for m in history_msgs]
+
+        # 5. Call AI Engine
+        ai_payload = {
+            "message": message_data.message,
+            "history": history_payload,
+            "user_context": context,
+            "language": message_data.language or "en"
+        }
+        
+        ai_response_text = "I'm having trouble reaching my brain servers."
+        
+        async with httpx.AsyncClient() as client:
+            try:
+                # We use the existing AI Engine chat endpoint but passed with rich context
+                response = await client.post(f"{AI_ENGINE_URL}/chat/send", json=ai_payload, timeout=60.0)
+                if response.status_code == 200:
+                    ai_response_text = response.json().get("response", "")
+                else:
+                    ai_response_text = f"Connection Error: {response.status_code} - {response.text}"
+            except Exception as e:
+                ai_response_text = f"AI Error: {str(e)}"
+                
+        # 6. Save AI Response
+        ai_msg = ChatMessage(session_id=session_id, role="assistant", content=ai_response_text)
+        db.add(ai_msg)
+        
+        # Update Session Timestamp
+        session.updated_at = datetime.now()
+        
+        db.commit()
+        db.refresh(ai_msg)
+        
+        return ai_msg
+    except Exception as e:
+        import traceback
+        traceback.print_exc() # Print to server console
+        # Return a safe error message as a chat message so frontend doesn't break
+        # We need to return a ChatMessageResponse compatible object
+        return ChatMessageResponse(
+            id=0,
+            role="assistant",
+            content=f"System Critical Error: {str(e)}",
+            created_at=datetime.now()
+        )

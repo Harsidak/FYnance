@@ -34,7 +34,7 @@ from config import settings
 
 # Configure LangChain Model
 model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-2.0-flash-exp",
     google_api_key=settings.GEMINI_API_KEY,
     temperature=0.4
 )

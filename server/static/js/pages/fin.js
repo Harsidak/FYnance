@@ -223,7 +223,10 @@ export async function renderFinChat(container) {
         chatInput.value = '';
 
         try {
-            await api(`/chat/sessions/${currentSessionId}/message`, 'POST', { message: text });
+            await api(`/chat/sessions/${currentSessionId}/message`, 'POST', {
+                message: text,
+                language: state.language
+            });
             // Reload full chat to get AI response and proper formatting
             loadChat(currentSessionId, document.querySelector(`.session-item[data-id="${currentSessionId}"] .session-title`).textContent);
         } catch (err) {
