@@ -2,27 +2,34 @@
 import { api } from '../api.js';
 
 export async function renderGoals(container) {
+    let editingGoalId = null; // State to track if we are editing a goal
+
+    // Render the container structure first
     container.innerHTML = `
-        <div>
+        <div class="fade-in">
             <h1 class="page-title">Savings Goals</h1>
             
-            <!-- Create Goal Form -->
+            <!-- Create/Edit Goal Form -->
             <div class="glass-card" style="margin-bottom: 3rem; background: linear-gradient(135deg, rgba(var(--color-1), 0.1), rgba(var(--color-3), 0.1));">
-                <h2 style="margin-bottom: 1.5rem;">Create New Goal</h2>
+                <h2 id="form-title" style="margin-bottom: 1.5rem;">Create New Goal</h2>
                 <form id="goal-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;">
                     <div>
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Goal Name</label>
-                        <input type="text" name="name" class="glass-input" placeholder="e.g. New Laptop" required>
+                        <input type="text" id="goal-name" name="name" class="glass-input" placeholder="e.g. New Laptop" required>
                     </div>
                     <div>
                          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Target Amount ($)</label>
-                        <input type="number" step="0.01" name="target_amount" class="glass-input" required>
+                        <input type="number" id="goal-target" step="0.01" name="target_amount" class="glass-input" required>
                     </div>
                     <div>
                          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Deadline (Optional)</label>
-                        <input type="date" name="deadline" class="glass-input">
+                        <input type="date" id="goal-deadline" name="deadline" class="glass-input">
                     </div>
-                    <button type="submit" class="btn-primary" style="margin-top: 0;">Create Goal</button>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" id="submit-btn" class="btn-primary" style="margin-top: 0; flex: 1;">Create Goal</button>
+                         <button type="button" id="cancel-edit-btn" class="nav-btn" style="display: none; flex: 1; text-align: center;">Cancel</button>
+                    </div>
                 </form>
             </div>
 
@@ -34,7 +41,25 @@ export async function renderGoals(container) {
     `;
 
     const form = document.getElementById('goal-form');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
     const listContainer = document.getElementById('goals-list');
+
+    // Inputs
+    const nameInput = document.getElementById('goal-name');
+    const targetInput = document.getElementById('goal-target');
+    const deadlineInput = document.getElementById('goal-deadline');
+
+    const resetFormState = () => {
+        editingGoalId = null;
+        form.reset();
+        formTitle.textContent = "Create New Goal";
+        submitBtn.textContent = "Create Goal";
+        cancelEditBtn.style.display = 'none';
+    };
+
+    cancelEditBtn.onclick = resetFormState;
 
     const loadGoals = async () => {
         try {
@@ -56,7 +81,7 @@ export async function renderGoals(container) {
             const isCompleted = progress >= 100;
 
             return `
-                <div class="glass-card" style="position: relative; overflow: hidden;">
+                <div class="glass-card" style="position: relative; overflow: hidden; display: flex; flex-direction: column;">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                         <div>
                             <h3 style="font-size: 1.5rem; font-weight: bold;">${goal.name}</h3>
@@ -64,7 +89,20 @@ export async function renderGoals(container) {
                                 ${goal.deadline ? `Due: ${new Date(goal.deadline).toLocaleDateString()}` : 'No deadline'}
                             </p>
                         </div>
-                        ${isCompleted ? '<span style="color: rgb(var(--color-1)); font-weight: bold; font-size: 1.5rem;">✓</span>' : ''}
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                             ${isCompleted ? '<span style="color: rgb(var(--color-1)); font-weight: bold; font-size: 1.5rem; margin-right: 0.5rem;">✓</span>' : ''}
+                             
+
+                             <!-- Edit/Delete Actions -->
+
+                             <!-- Edit/Delete Actions -->
+                             <button class="nav-btn edit-goal-btn" data-id="${goal.id}" title="Edit Goal" style="padding: 0.5rem; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; background: rgba(255, 255, 255, 0.1);">
+                                <i data-lucide="pencil" style="width: 16px; height: 16px;"></i>
+                             </button>
+                             <button class="nav-btn delete-goal-btn" data-id="${goal.id}" title="Delete Goal" style="padding: 0.5rem; display: flex; align-items: center; justify-content: center; background: rgba(255, 100, 100, 0.2); border-color: rgba(255, 100, 100, 0.3);">
+                                <i data-lucide="trash-2" style="width: 16px; height: 16px; color: #ff6b6b;"></i>
+                             </button>
+                        </div>
                     </div>
 
                     <div style="margin-bottom: 0.5rem; display: flex; align-items: baseline; gap: 0.5rem;">
@@ -77,17 +115,23 @@ export async function renderGoals(container) {
                         <div style="width: ${Math.min(progress, 100)}%; background: linear-gradient(to right, rgb(var(--color-1)), rgb(var(--color-2))); height: 100%; transition: width 0.5s;"></div>
                     </div>
 
-                    <button class="nav-btn w-full add-funds-btn" data-id="${goal.id}" style="width: 100%; text-align: center;">+ Add Funds</button>
+                    <div style="margin-top: auto;">
+                         <button class="nav-btn w-full add-funds-btn" data-id="${goal.id}" style="width: 100%; text-align: center;">+ Add Funds</button>
+                    </div>
                 </div>
             `;
         }).join('');
 
+
+        if (window.lucide) window.lucide.createIcons();
+
         // Attach Listeners
+
+        // Add Funds
         document.querySelectorAll('.add-funds-btn').forEach(btn => {
             btn.onclick = async () => {
                 const amount = prompt("How much would you like to add?");
                 if (!amount) return;
-
                 try {
                     await api(`/goals/${btn.dataset.id}?amount_added=${parseFloat(amount)}`, 'PUT');
                     loadGoals();
@@ -96,11 +140,52 @@ export async function renderGoals(container) {
                 }
             };
         });
+
+        // Delete Goal
+        document.querySelectorAll('.delete-goal-btn').forEach(btn => {
+            btn.onclick = async () => {
+                if (!confirm("Are you sure you want to delete this goal? This action cannot be undone.")) return;
+
+                try {
+                    await api(`/goals/${btn.dataset.id}`, 'DELETE');
+                    // If we deleted the goal being edited, reset the form
+                    if (editingGoalId == btn.dataset.id) {
+                        resetFormState();
+                    }
+                    loadGoals();
+                } catch (err) {
+                    alert("Failed to delete goal: " + err.message);
+                }
+            };
+        });
+
+        // Edit Goal
+        document.querySelectorAll('.edit-goal-btn').forEach(btn => {
+            btn.onclick = () => {
+                const goalId = parseInt(btn.dataset.id);
+                const goal = goals.find(g => g.id === goalId);
+                if (!goal) return;
+
+                editingGoalId = goalId;
+                formTitle.textContent = "Edit Goal";
+                submitBtn.textContent = "Update Goal";
+                cancelEditBtn.style.display = 'block';
+
+                nameInput.value = goal.name;
+                targetInput.value = goal.target_amount;
+                deadlineInput.value = goal.deadline || '';
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+        });
     };
 
     form.onsubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
+
+        // Basic payload
         const payload = {
             name: formData.get('name'),
             target_amount: parseFloat(formData.get('target_amount')),
@@ -108,11 +193,18 @@ export async function renderGoals(container) {
         };
 
         try {
-            await api('/goals', 'POST', payload);
-            form.reset();
+            if (editingGoalId) {
+                // Update Mode
+                await api(`/goals/${editingGoalId}`, 'PATCH', payload);
+                resetFormState();
+            } else {
+                // Create Mode
+                await api('/goals', 'POST', payload);
+                form.reset();
+            }
             loadGoals();
         } catch (err) {
-            alert("Error creating goal: " + err.message);
+            alert(`Error ${editingGoalId ? 'updating' : 'creating'} goal: ` + err.message);
         }
     };
 

@@ -39,9 +39,33 @@ export async function renderProfile(container) {
                             <label class="ios-label">Monthly Income ($)</label>
                             <input type="number" id="profile-income" value="${state.user?.monthly_income || 0}" step="0.1" class="ios-input">
                         </div>
-                        <div class="ios-input-group">
-                            <label class="ios-label">Savings Balance ($)</label>
-                            <input type="number" id="profile-savings" value="${state.user?.savings_balance || 0}" step="0.1" class="ios-input">
+                        
+                        <!-- Savings Strategy Section -->
+                        <div class="ios-input-group" style="margin-top: 1rem;">
+                            <label class="ios-label" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>Savings Strategy</span>
+                                <span id="calculated-savings-display" style="color: var(--c-green-neon); font-size: 0.9rem;">$${state.user?.savings_balance || 0}</span>
+                            </label>
+                            
+                            <!-- Hidden input for form submission -->
+                            <input type="hidden" id="profile-savings" value="${state.user?.savings_balance || 0}">
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <button class="strategy-btn nav-btn" data-rate="0.1" style="font-size: 0.8rem; justify-content: center; border-radius: 12px;">
+                                    Stealth (10%)
+                                </button>
+                                <button class="strategy-btn nav-btn" data-rate="0.3" style="font-size: 0.8rem; justify-content: center; border-radius: 12px;">
+                                    Progressive (30%)
+                                </button>
+                                <button class="strategy-btn nav-btn" data-rate="0.5" style="font-size: 0.8rem; justify-content: center; border-radius: 12px;">
+                                    Aggressive (50%)
+                                </button>
+                                <button class="strategy-btn nav-btn" data-rate="custom" style="font-size: 0.8rem; justify-content: center; border-radius: 12px;">
+                                    Custom
+                                </button>
+                            </div>
+
+                            <input type="number" id="custom-savings-input" placeholder="Enter % (e.g. 20)" class="ios-input hidden" style="margin-top: 0.5rem;" max="100" min="0">
                         </div>
                     </div>
                 </div>
@@ -54,19 +78,72 @@ export async function renderProfile(container) {
         </div>
     `;
 
+    // --- Strategy Logic ---
+    const incomeInput = document.getElementById('profile-income');
+    const savingsInput = document.getElementById('profile-savings');
+    const displaySpan = document.getElementById('calculated-savings-display');
+    const customInput = document.getElementById('custom-savings-input');
+    const strategyBtns = document.querySelectorAll('.strategy-btn');
+
+    let currentRate = null;
+
+    const updateCalculation = () => {
+        const income = parseFloat(incomeInput.value) || 0;
+        let savings = 0;
+
+        if (currentRate === 'custom') {
+            const pct = parseFloat(customInput.value) || 0;
+            savings = income * (pct / 100);
+        } else if (currentRate) {
+            savings = income * currentRate;
+        } else {
+            // Default or Initial State - keep existing savings or calculate reverse rate?
+            // For now, respect the value already in hidden input if we haven't touched buttons
+            savings = parseFloat(savingsInput.value) || 0;
+        }
+
+        savingsInput.value = savings.toFixed(2);
+        displaySpan.textContent = `$${savings.toFixed(2)}`;
+    };
+
+    strategyBtns.forEach(btn => {
+        btn.onclick = (e) => {
+            // Visual Selection
+            strategyBtns.forEach(b => {
+                b.style.background = 'var(--surface-2)';
+                b.style.borderColor = 'rgba(255,255,255,0.1)';
+            });
+            btn.style.background = 'rgba(var(--p-green-mint), 0.2)';
+            btn.style.borderColor = 'rgb(var(--p-green-mint))';
+
+            // Logic
+            currentRate = btn.dataset.rate === 'custom' ? 'custom' : parseFloat(btn.dataset.rate);
+
+            if (currentRate === 'custom') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                updateCalculation();
+            }
+        };
+    });
+
+    customInput.oninput = updateCalculation;
+    incomeInput.oninput = updateCalculation;
+
+    // --- Save & Logout Handlers --
     document.getElementById('save-profile').addEventListener('click', async () => {
         const wage = parseFloat(document.getElementById('profile-wage').value) || 0;
         const income = parseFloat(document.getElementById('profile-income').value) || 0;
         const savings = parseFloat(document.getElementById('profile-savings').value) || 0;
-
-        // Remove context from update as it's no longer in UI
 
         try {
             const updatedUser = await api('/users/me/profile', 'PUT', {
                 hourly_wage: wage,
                 monthly_income: income,
                 savings_balance: savings,
-                financial_context: state.user?.financial_context || '' // Keep existing context if any, or empty
+                financial_context: state.user?.financial_context || ''
             });
 
             if (updatedUser) {

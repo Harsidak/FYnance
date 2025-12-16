@@ -81,6 +81,11 @@ class GoalBase(BaseModel):
 class GoalCreate(GoalBase):
     pass
 
+class GoalUpdate(BaseModel):
+    name: Optional[str] = None
+    target_amount: Optional[float] = None
+    deadline: Optional[Any] = None
+
 class Goal(GoalBase):
     id: int
     user_id: int
