@@ -5,12 +5,12 @@ export async function renderFinChat(container) {
     let currentSessionId = null;
 
     container.innerHTML = `
-        <div class="fin-chat-layout fade-in" style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; height: calc(100vh - 140px); margin-bottom: 2rem;">
+        <div class="fin-chat-layout fade-in" style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; height: calc(100vh - 120px); max-height: calc(100vh - 120px); margin-bottom: 0;">
             
             <!-- Sidebar: Session List -->
             <div class="glass-card" style="display: flex; flex-direction: column; overflow: hidden; padding: 0;">
-                <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <button id="new-chat-btn" class="btn-primary" style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem;">
+                <div style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <button id="new-chat-btn" class="btn-primary" style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.8rem;">
                         <i data-lucide="plus"></i> New Chat
                     </button>
                 </div>
@@ -23,38 +23,26 @@ export async function renderFinChat(container) {
             <!-- Chat Window -->
             <div class="glass-card" style="display: flex; flex-direction: column; overflow: hidden; position: relative; padding: 0;">
                 
-                <!-- Chat Header -->
-                <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--c-violet-neon), var(--c-green-neon)); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(var(--p-violet-neon), 0.4);">
-                            <i data-lucide="brain-circuit" style="color: white; width: 20px; height: 20px;"></i>
-                        </div>
-                        <div>
-                            <div id="chat-title" style="font-weight: bold; font-size: 1.1rem;">Fin</div>
-                            <div style="font-size: 0.8rem; opacity: 0.6; display: flex; align-items: center; gap: 5px;">
-                                <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--c-green-neon);"></span> Online
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Messages Area -->
-                <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1rem;">
                     <!-- Messages will appear here -->
-                    <div style="text-align: center; margin-top: 2rem; opacity: 0.5;">
-                        <i data-lucide="message-square" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
-                        <p>Select a chat or start a new one to begin.</p>
+                    <div style="text-align: center; margin-top: auto; margin-bottom: auto; opacity: 0.5;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--c-violet-neon), var(--c-blue-neon)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 0 20px rgba(var(--p-violet-neon), 0.4);">
+                             <i data-lucide="brain-circuit" style="width: 30px; height: 30px; color: white;"></i>
+                        </div>
+                        <h3>Fin.AI Architect</h3>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Select a chat or start a new one to begin.</p>
                     </div>
                 </div>
 
                 <!-- Input Area -->
-                <div style="padding: 1.5rem; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05);">
+                <div style="padding: 1.5rem; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
                     <form id="chat-form" style="position: relative;">
                         <textarea id="chat-input" placeholder="Ask Fin about your goals, spending, or financial strategy..." 
-                            style="width: 100%; height: 60px; padding: 1rem; padding-right: 60px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; resize: none; font-family: inherit; outline: none; transition: all 0.2s;"
+                            style="width: 100%; height: 50px; padding: 1rem; padding-right: 60px; border-radius: 25px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; resize: none; font-family: inherit; outline: none; transition: all 0.2s;"
                         ></textarea>
-                        <button type="submit" style="position: absolute; right: 10px; bottom: 10px; background: var(--c-violet-neon); border: none; border-radius: 8px; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white;">
-                            <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                        <button type="submit" style="position: absolute; right: 5px; bottom: 5px; background: var(--c-violet-neon); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                            <i data-lucide="send" style="width: 18px; height: 18px; margin-left: 2px;"></i>
                         </button>
                     </form>
                 </div>
@@ -141,7 +129,7 @@ export async function renderFinChat(container) {
     // --- 2. Load Chat Messages ---
     const loadChat = async (sessionId, title) => {
         currentSessionId = sessionId;
-        chatTitleEl.textContent = title;
+        // chatTitleEl.textContent = title; // Header removed
         messagesEl.innerHTML = '<div class="loading">Loading history...</div>';
         loadSessions(); // Re-render to update active state
 
@@ -150,7 +138,7 @@ export async function renderFinChat(container) {
 
             if (messages.length === 0) {
                 messagesEl.innerHTML = `
-                    <div style="text-align: center; margin-top: 2rem; opacity: 0.7;">
+                    <div style="text-align: center; margin-top: auto; margin-bottom: auto; opacity: 0.7;">
                         <p>This is the start of your encrypted session with Fin.</p>
                     </div>
                 `;
@@ -164,15 +152,15 @@ export async function renderFinChat(container) {
 
     const renderMessages = (messages) => {
         messagesEl.innerHTML = messages.map(msg => `
-            <div class="message fade-in" style="display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; ${msg.role === 'user' ? 'flex-direction: row-reverse;' : ''}">
-                <div style="width: 32px; height: 32px; border-radius: 50%; min-width: 32px; background: ${msg.role === 'user' ? 'rgba(255,255,255,0.2)' : 'var(--c-violet-neon)'}; display: flex; align-items: center; justify-content: center;">
-                    <i data-lucide="${msg.role === 'user' ? 'user' : 'bot'}" style="width: 16px; height: 16px; color: white;"></i>
+            <div class="message fade-in" style="display: flex; gap: 0.8rem; align-items: flex-end; margin-bottom: 1rem; ${msg.role === 'user' ? 'flex-direction: row-reverse;' : ''}">
+                <div style="width: 28px; height: 28px; border-radius: 50%; min-width: 28px; background: ${msg.role === 'user' ? 'rgba(255,255,255,0.2)' : 'linear-gradient(135deg, var(--c-violet-neon), var(--c-blue-neon))'}; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                    <i data-lucide="${msg.role === 'user' ? 'user' : 'brain-circuit'}" style="width: 14px; height: 14px; color: white;"></i>
                 </div>
-                <div style="background: ${msg.role === 'user' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.3)'}; padding: 1rem 1.5rem; border-radius: 18px; border-${msg.role === 'user' ? 'top-right' : 'top-left'}-radius: 4px; max-width: 80%; border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="message-content" style="font-size: 0.95rem; line-height: 1.6;">
+                <div style="background: ${msg.role === 'user' ? 'var(--c-violet-neon)' : 'rgba(255,255,255,0.08)'}; padding: 0.8rem 1.2rem; border-radius: 18px; border-${msg.role === 'user' ? 'bottom-right' : 'bottom-left'}-radius: 4px; max-width: 75%; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
+                    <div class="message-content" style="font-size: 0.95rem; line-height: 1.5; color: ${msg.role === 'user' ? 'white' : 'rgba(255,255,255,0.9)'};">
                         ${msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}
                     </div>
-                    <div style="font-size: 0.7rem; opacity: 0.4; margin-top: 0.5rem; text-align: right;">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    <div style="font-size: 0.65rem; opacity: 0.5; margin-top: 0.4rem; text-align: right;">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
             </div>
         `).join('');
@@ -206,12 +194,13 @@ export async function renderFinChat(container) {
             created_at: new Date().toISOString()
         };
         messagesEl.innerHTML += `
-            <div class="message fade-in" style="display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; flex-direction: row-reverse;">
-                <div style="width: 32px; height: 32px; border-radius: 50%; min-width: 32px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                    <i data-lucide="user" style="width: 16px; height: 16px; color: white;"></i>
+            <div class="message fade-in" style="display: flex; gap: 0.8rem; align-items: flex-end; margin-bottom: 1rem; flex-direction: row-reverse;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; min-width: 28px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                    <i data-lucide="user" style="width: 14px; height: 14px; color: white;"></i>
                 </div>
-                <div style="background: rgba(255,255,255,0.1); padding: 1rem 1.5rem; border-radius: 18px; border-top-right-radius: 4px; max-width: 80%; border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="message-content">${text}</div>
+                <div style="background: var(--c-violet-neon); padding: 0.8rem 1.2rem; border-radius: 18px; border-bottom-right-radius: 4px; max-width: 75%; box-shadow: 0 2px 8px rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
+                    <div class="message-content" style="font-size: 0.95rem; line-height: 1.5; color: white;">${text}</div>
+                    <div style="font-size: 0.65rem; opacity: 0.5; margin-top: 0.4rem; text-align: right;">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
             </div>
         `;
