@@ -7,6 +7,7 @@ import { renderSubscriptions } from './pages/subscriptions.js?v=3';
 import { renderAI } from './pages/ai.js?v=4';
 import { renderSimulation } from './pages/simulation.js';
 import { renderProfile } from './pages/profile.js';
+import { renderFinChat } from './pages/fin.js';
 import ColorBends from './components/color-bends.js';
 
 import { state } from './state.js';
@@ -35,7 +36,8 @@ const routes = {
     'ai': renderAI,
     'simulation': renderSimulation,
     'subscriptions': renderSubscriptions,
-    'profile': renderProfile
+    'profile': renderProfile,
+    'fin': renderFinChat
 };
 
 // API Wrapper and Logout moved to api.js

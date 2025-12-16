@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth, users, spending, mood, goals, analytics, subscriptions, ai, social
+from routers import auth, users, spending, mood, goals, analytics, subscriptions, ai, social, chat
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -29,6 +29,7 @@ app.include_router(analytics.router)
 app.include_router(subscriptions.router)
 app.include_router(ai.router)
 app.include_router(social.router)
+app.include_router(chat.router)
 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
