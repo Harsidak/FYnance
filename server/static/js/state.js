@@ -14,6 +14,13 @@ export const state = {
         'GBP': '£',
         'JPY': '¥'
     },
+    exchangeRates: {
+        'USD': 1.0,
+        'INR': 84.0,
+        'EUR': 0.92,
+        'GBP': 0.78,
+        'JPY': 150.0
+    },
 
     // Translations
     translations: translations,
@@ -25,10 +32,27 @@ export const state = {
         return dict[key] || this.translations['en'][key] || key;
     },
 
+    // Helper: Convert FROM USD (for Display)
+    convertFromUSD(amount) {
+        const rate = this.exchangeRates[this.currency] || 1;
+        return amount * rate;
+    },
+
+    // Helper: Convert TO USD (for Saving)
+    convertToUSD(amount) {
+        const rate = this.exchangeRates[this.currency] || 1;
+        if (rate === 0) return amount;
+        return amount / rate;
+    },
+
     // Helper: Format Currency
     formatCurrency(amount) {
+        // Amount is assumed to be in USD (Base)
         const symbol = this.currencySymbols[this.currency] || '$';
-        return `${symbol}${amount.toFixed(2)}`;
+        const converted = this.convertFromUSD(amount);
+
+        // Formatting locale could be dynamic but let's stick to standard decimal
+        return `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     },
 
     // Helper: Set Preference

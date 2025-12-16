@@ -64,12 +64,12 @@ export async function renderProfile(container) {
                         <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--c-violet-neon); text-transform: uppercase; letter-spacing: 1px;">${state.t('income_stability')}</div>
 
                         <div class="ios-input-group">
-                            <label class="ios-label">${state.t('primary_income')}</label>
-                            <input type="number" id="profile-primary-income" value="${state.user?.primary_income || 0}" step="100" class="ios-input">
+                            <label class="ios-label">${state.t('primary_income')} (${state.currency})</label>
+                            <input type="number" id="profile-primary-income" value="${state.convertFromUSD(state.user?.primary_income || 0).toFixed(2)}" step="100" class="ios-input">
                         </div>
                         <div class="ios-input-group">
-                            <label class="ios-label">${state.t('secondary_income')}</label>
-                            <input type="number" id="profile-secondary-income" value="${state.user?.secondary_income || 0}" step="100" class="ios-input">
+                            <label class="ios-label">${state.t('secondary_income')} (${state.currency})</label>
+                            <input type="number" id="profile-secondary-income" value="${state.convertFromUSD(state.user?.secondary_income || 0).toFixed(2)}" step="100" class="ios-input">
                         </div>
                         <div class="ios-input-group">
                             <label class="ios-label">${state.t('income_stability')}</label>
@@ -83,17 +83,17 @@ export async function renderProfile(container) {
                          <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--c-green-neon); text-transform: uppercase; letter-spacing: 1px;">${state.t('assets_savings')}</div>
 
                         <div class="ios-input-group">
-                            <label class="ios-label">${state.t('savings_strategy')} (${state.t('currency')})</label>
+                            <label class="ios-label">${state.t('savings_strategy')} (${state.currency})</label>
                             <!-- This was the hidden one, now we make it explicit 'Current Savings' but it maps to savings_balance -->
-                            <input type="number" id="profile-savings" value="${state.user?.savings_balance || 0}" step="100" class="ios-input">
+                            <input type="number" id="profile-savings" value="${state.convertFromUSD(state.user?.savings_balance || 0).toFixed(2)}" step="100" class="ios-input">
                         </div>
                          <div class="ios-input-group">
-                            <label class="ios-label">${state.t('emergency_fund')}</label>
-                            <input type="number" id="profile-emergency" value="${state.user?.emergency_fund || 0}" step="100" class="ios-input">
+                            <label class="ios-label">${state.t('emergency_fund')} (${state.currency})</label>
+                            <input type="number" id="profile-emergency" value="${state.convertFromUSD(state.user?.emergency_fund || 0).toFixed(2)}" step="100" class="ios-input">
                         </div>
                          <div class="ios-input-group">
-                            <label class="ios-label">${state.t('investments')}</label>
-                            <input type="number" id="profile-investments" value="${state.user?.investments || 0}" step="100" class="ios-input">
+                            <label class="ios-label">${state.t('investments')} (${state.currency})</label>
+                            <input type="number" id="profile-investments" value="${state.convertFromUSD(state.user?.investments || 0).toFixed(2)}" step="100" class="ios-input">
                         </div>
                         
                         <!-- Savings Strategy Calculator (Visual only now, updates the savings input? No, existing logic calculated "savings target" based on income. 
@@ -182,7 +182,10 @@ export async function renderProfile(container) {
             savings = parseFloat(savingsInput.value) || 0;
         }
 
-        displaySpan.textContent = state.formatCurrency(savings);
+        // Savings is in LOCAL currency here.
+        // We just want to display it with the symbol.
+        const symbol = state.currencySymbols[state.currency] || '$';
+        displaySpan.textContent = `${symbol}${savings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
     strategyBtns.forEach(btn => {
@@ -215,11 +218,12 @@ export async function renderProfile(container) {
 
     // --- Save & Logout Handlers --
     document.getElementById('save-profile').addEventListener('click', async () => {
-        const primary = parseFloat(document.getElementById('profile-primary-income').value) || 0;
-        const secondary = parseFloat(document.getElementById('profile-secondary-income').value) || 0;
-        const savings = parseFloat(document.getElementById('profile-savings').value) || 0;
-        const emergency = parseFloat(document.getElementById('profile-emergency').value) || 0;
-        const investments = parseFloat(document.getElementById('profile-investments').value) || 0;
+        // Convert FROM local currency TO USD for storage
+        const primary = state.convertToUSD(parseFloat(document.getElementById('profile-primary-income').value) || 0);
+        const secondary = state.convertToUSD(parseFloat(document.getElementById('profile-secondary-income').value) || 0);
+        const savings = state.convertToUSD(parseFloat(document.getElementById('profile-savings').value) || 0);
+        const emergency = state.convertToUSD(parseFloat(document.getElementById('profile-emergency').value) || 0);
+        const investments = state.convertToUSD(parseFloat(document.getElementById('profile-investments').value) || 0);
         const stability = document.getElementById('profile-stability').value;
 
         try {

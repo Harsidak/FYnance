@@ -40,6 +40,7 @@ class ChatMessageResponse(BaseModel):
 
 class ChatMessageRequest(BaseModel):
     message: str
+    language: Optional[str] = "en"
 
 # --- Endpoints ---
 
@@ -129,7 +130,8 @@ async def send_message(session_id: int, message_data: ChatMessageRequest, db: Se
     ai_payload = {
         "message": message_data.message,
         "history": history_payload,
-        "user_context": context
+        "user_context": context,
+        "language": message_data.language or "en"
     }
     
     ai_response_text = "I'm having trouble reaching my brain servers."
