@@ -59,6 +59,7 @@ export async function renderAI(container) {
                             <div>
                                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--c-blue-neon); margin-bottom: 0.2rem;">RECOMMENDATION</div>
                                 <div id="risk-intervention" style="font-size: 0.9rem;"></div>
+                                <div id="risk-action" style="margin-top: 0.5rem; font-weight: 800; font-size: 0.85rem; padding: 4px 8px; background: rgba(0,0,0,0.3); border-radius: 4px; display: inline-block;"></div>
                             </div>
                         </div>
 
@@ -114,18 +115,54 @@ export async function renderAI(container) {
 
         try {
             // First fetch data to send to AI
-            const [spending, mood] = await Promise.all([
+            const [user, spending, mood, goals, subs] = await Promise.all([
+                api('/auth/me'),
                 api('/spending?limit=50'),
-                api('/mood?limit=10')
+                api('/mood?limit=10'),
+                api('/goals').catch(() => []),
+                api('/subscriptions').catch(() => [])
             ]);
 
+            // Calculate Monthly Fixed Costs (Same logic as Dashboard)
+            const monthlySubs = subs.reduce((acc, sub) => {
+                return acc + (sub.billing_cycle === 'Yearly' ? sub.cost / 12 : sub.cost);
+            }, 0);
+
+            const monthlyGoals = goals.reduce((acc, goal) => {
+                if (goal.current_amount >= goal.target_amount) return acc;
+                const remaining = goal.target_amount - goal.current_amount;
+                let months = 12;
+                if (goal.deadline) {
+                    const days = Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+                    months = Math.max(days / 30, 1);
+                }
+                return acc + (remaining / months);
+            }, 0);
+
+            const fixedCosts = monthlySubs + monthlyGoals;
+
             const payload = {
-                user_id: state.user?.id || 1,
+                user_id: state.user?.id || user.id,
                 transactions: spending.map(s => ({ amount: s.amount, category: s.category, timestamp: s.date })),
-                mood_logs: mood.map(m => `Score: ${m.score}, Note: ${m.note}`)
+                mood_logs: mood.map(m => `Score: ${m.score}, Note: ${m.note}`),
+                user_profile: {
+                    monthly_income: user.monthly_income || 0,
+                    savings_balance: user.savings_balance || 0,
+                    income_stability: user.income_stability || 'fixed'
+                },
+                financial_context: {
+                    fixed_costs: fixedCosts,
+                    currency: state.currency
+                }
             };
 
             const res = await api('/ai/predict', 'POST', payload);
+
+            // Double Check: Did the user leave the page?
+            if (!document.getElementById('risk-score')) {
+                console.warn("View unmounted during AI analysis.");
+                return;
+            }
 
             // Render Result
             placeholder.classList.add('hidden');
@@ -141,11 +178,13 @@ export async function renderAI(container) {
             const riskLabel = document.getElementById('risk-label');
             const riskReason = document.getElementById('risk-reason');
             const riskIntervention = document.getElementById('risk-intervention');
+            const riskAction = document.getElementById('risk-action'); // New ID
 
             // Values
-            riskScoreEl.textContent = `${percentage}%`;
-            riskReason.textContent = res.trigger_reason || "No significant patterns detected.";
-            riskIntervention.textContent = res.recommended_intervention || "Maintain current spending velocity.";
+            if (riskScoreEl) riskScoreEl.textContent = `${percentage}%`;
+            if (riskReason) riskReason.textContent = res.trigger_reason || "No significant patterns detected.";
+            if (riskIntervention) riskIntervention.textContent = res.recommended_intervention || "Maintain current spending velocity.";
+            if (riskAction && res.action) riskAction.textContent = res.action;
 
             // Dynamic Styling
             let color = 'var(--c-green-neon)';
@@ -159,23 +198,27 @@ export async function renderAI(container) {
                 labelText = 'Moderate Risk';
             }
 
-            riskScoreEl.style.color = color;
-            riskBar.style.background = color;
-            riskLabel.style.color = color;
-            riskLabel.textContent = labelText;
-
-            // Animate Bar
-            setTimeout(() => {
-                riskBar.style.width = `${percentage}%`;
-            }, 100);
+            if (riskScoreEl) riskScoreEl.style.color = color;
+            if (riskBar) {
+                riskBar.style.background = color;
+                // Animate Bar
+                setTimeout(() => {
+                    riskBar.style.width = `${percentage}%`;
+                }, 100);
+            }
+            if (riskLabel) {
+                riskLabel.style.color = color;
+                riskLabel.textContent = labelText;
+            }
 
         } catch (err) {
+            console.error("AI Display Error", err);
             alert("Analysis Failed: " + err.message);
             placeholder.classList.remove('hidden');
             predResult.classList.add('hidden');
             predictBtn.innerHTML = `<i data-lucide="zap" style="width: 16px; margin-right: 8px;"></i> Retry`;
         } finally {
-            predictBtn.disabled = false;
+            if (predictBtn) predictBtn.disabled = false;
         }
     };
 

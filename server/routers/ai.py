@@ -18,10 +18,21 @@ class Transaction(BaseModel):
     category: str
     timestamp: Optional[Any] = None
 
+class UserProfile(BaseModel):
+    monthly_income: float
+    savings_balance: float
+    income_stability: str
+
+class FinancialContext(BaseModel):
+    fixed_costs: float
+    currency: str
+
 class BehaviourInput(BaseModel):
     user_id: int
     transactions: List[Transaction]
     mood_logs: Optional[List[str]] = []
+    user_profile: Optional[UserProfile] = None
+    financial_context: Optional[FinancialContext] = None
 
 class PredictionResponse(BaseModel):
     risk_score: float
@@ -34,6 +45,7 @@ class InterventionRequest(BaseModel):
     risk_score: float
     trigger_reason: str
     user_id: int
+    context_data: Optional[dict] = {}
 
 class SimulationInput(BaseModel):
     current_balance: Optional[float] = 0.0
