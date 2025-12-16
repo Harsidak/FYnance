@@ -218,9 +218,9 @@ export async function renderDashboard(container) {
                         <span>${aiData && aiData.future_self_status === 'happy' ? '🤩' : (aiData && aiData.future_self_status === 'stressed' ? '😫' : '😐')}</span>
                     </div>
                     <div style="font-size: 1.1rem; line-height: 1.5; margin-top: 0.5rem;">
-                        ${aiData ? aiData.risk_assessment : "Systems initializing... Gather more data for precise prediction."}
+                        ${aiData ? (aiData.risk_assessment || aiData.recommended_intervention || aiData.trigger_reason || "Systems initializing... Gather more data for precise prediction.") : "Systems initializing... Gather more data for precise prediction."}
                     </div>
-                    ${aiData && aiData.predicted_risk_score > 50 ?
+                    ${(aiData && (aiData.risk_score > 0.5 || aiData.predicted_risk_score > 50)) ?
                 `<div style="margin-top: 0.5rem; color: #ff4444; font-size: 0.9rem;">⚠️ High spending velocity detected.</div>` :
                 `<div style="margin-top: 0.5rem; color: var(--ios-text-secondary); font-size: 0.9rem;">Trajectory stable. Keep it up.</div>`
             }
