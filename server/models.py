@@ -14,10 +14,16 @@ class User(Base):
     current_streak = Column(Integer, default=0)
     last_login_date = Column(Date, nullable=True)
     total_xp = Column(Integer, default=0)
-    hourly_wage = Column(Float, default=0.0)
-    monthly_income = Column(Float, default=0.0)
-    savings_balance = Column(Float, default=0.0)
-    financial_context = Column(String, nullable=True)
+    hourly_wage = Column(Float, default=0.0) # DEPRECATED
+    primary_income = Column(Float, default=0.0)
+    secondary_income = Column(Float, default=0.0)
+    income_stability = Column(String, default="fixed") # fixed, variable, volatile
+    emergency_fund = Column(Float, default=0.0)
+    investments = Column(Float, default=0.0)
+    
+    @property
+    def monthly_income(self):
+        return (self.primary_income or 0) + (self.secondary_income or 0)
 
     spendings = relationship("Spending", back_populates="user")
     moods = relationship("Mood", back_populates="user")

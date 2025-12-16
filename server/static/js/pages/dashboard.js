@@ -155,11 +155,7 @@ export async function renderDashboard(container) {
                 <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 10px; margin: 10px 0; overflow: hidden;">
                     <div style="width: ${Math.min(overallProgress, 100)}%; background: var(--c-violet-neon); height: 100%; box-shadow: 0 0 10px var(--c-violet-neon);"></div>
                 </div>
-                <div class="text-caption" style="margin-top: 5px;">
-                    ${totalMonthlyNeed > 0
-                    ? `Save <span style="color: var(--c-violet-neon); font-weight: bold;">$${totalMonthlyNeed.toFixed(0)}/month</span> to save.`
-                    : "All deadlines on track."}
-                </div>
+
             `;
         } else {
             goalContent = `
@@ -185,8 +181,8 @@ export async function renderDashboard(container) {
                         </div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="text-caption">NET LINK</div>
-                        <div style="font-family: monospace; color: var(--ios-text-secondary);">ONLINE // V2.2</div>
+                        <div class="text-caption">${state.t('system_status')}</div>
+                        <div style="font-family: monospace; color: var(--ios-text-secondary);">${state.t('online')} // V2.2</div>
                     </div>
                 </div>
 
@@ -196,10 +192,10 @@ export async function renderDashboard(container) {
                     <!-- Safety Budget -->
                     <div class="glass-card-3d">
                         <div class="ios-card-header">
-                            <i data-lucide="shield" style="width: 16px; margin-right: 8px;"></i> Safe-to-Spend
+                            <i data-lucide="shield" style="width: 16px; margin-right: 8px;"></i> ${state.t('safe_to_spend')}
                         </div>
-                        <div class="stat-value text-green">$${dailySafeSpend.toFixed(2)}</div>
-                        <div class="text-caption">Daily Allowance</div>
+                        <div class="stat-value text-green">${state.formatCurrency(dailySafeSpend)}</div>
+                        <div class="text-caption">${state.t('daily_allowance')}</div>
                         <div style="font-size: 0.7rem; opacity: 0.5; margin-top: 5px;">
                             (Rem. Budget - Spent) / ${daysRemaining} Days
                         </div>
@@ -214,7 +210,7 @@ export async function renderDashboard(container) {
                 <!-- 3. AI Insight Panel (Future Self) -->
                 <div class="glass-card-3d" style="margin-bottom: 2rem; border-left: 3px solid var(--c-violet-neon);">
                     <div class="ios-card-header" style="color: var(--c-violet-neon); display: flex; justify-content: space-between;">
-                        <span><i data-lucide="brain-circuit" style="width: 18px; margin-right: 8px;"></i> Fin.AI Analysis</span>
+                        <span><i data-lucide="brain-circuit" style="width: 18px; margin-right: 8px;"></i> ${state.t('fin_analysis')}</span>
                         <span>${aiData && aiData.future_self_status === 'happy' ? '🤩' : (aiData && aiData.future_self_status === 'stressed' ? '😫' : '😐')}</span>
                     </div>
                     <div style="font-size: 1.1rem; line-height: 1.5; margin-top: 0.5rem;">
@@ -230,30 +226,30 @@ export async function renderDashboard(container) {
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
                     <button class="vision-btn-secondary" onclick="window.location.hash='#spending'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="plus-circle"></i>
-                        <span style="font-size: 0.8rem;">Log</span>
+                        <span style="font-size: 0.8rem;">${state.t('log_expense')}</span>
                     </button>
-                    <button class="vision-btn-secondary" onclick="window.location.hash='#ai'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
+                    <button class="vision-btn-secondary" onclick="window.location.hash='#fin'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="message-circle"></i>
-                        <span style="font-size: 0.8rem;">Ask Fin</span>
+                        <span style="font-size: 0.8rem;">${state.t('ask_fin')}</span>
                     </button>
                     <button class="vision-btn-secondary" onclick="window.location.hash='#simulation'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                          <i data-lucide="play"></i>
-                        <span style="font-size: 0.8rem;">Simulate</span>
+                        <span style="font-size: 0.8rem;">${state.t('simulate')}</span>
                     </button>
                     <button class="vision-btn-secondary" onclick="window.location.hash='#goals'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="target"></i>
-                        <span style="font-size: 0.8rem;">Goal</span>
+                        <span style="font-size: 0.8rem;">${state.t('set_goal')}</span>
                     </button>
                      <button class="vision-btn-secondary" onclick="window.location.hash='#mood'" style="flex-direction: column; height: 80px; justify-content: center; gap: 5px;">
                         <i data-lucide="smile"></i>
-                        <span style="font-size: 0.8rem;">Mood</span>
+                        <span style="font-size: 0.8rem;">${state.t('mood_log')}</span>
                     </button>
                 </div>
 
                 <!-- 5. Recent Activity Feed -->
-                <h3 class="ios-card-header" style="margin-left: 0.5rem; margin-bottom: 1rem;">Live Feed</h3>
+                <h3 class="ios-card-header" style="margin-left: 0.5rem; margin-bottom: 1rem;">${state.t('recent_activity')}</h3>
                 <div class="ios-list">
-                    ${spending.length === 0 ? '<div style="padding: 1.5rem; text-align: center; color: var(--ios-text-secondary);">No data stream.</div>' : `
+                    ${spending.length === 0 ? `<div style="padding: 1.5rem; text-align: center; color: var(--ios-text-secondary);">${state.t('no_data')}</div>` : `
                         ${spending.slice(0, 5).map(item => `
                             <div class="ios-list-item" style="border-bottom: 1px solid rgba(255,255,255,0.03);">
                                 <div style="display: flex; align-items: center; gap: 1rem;">
@@ -264,7 +260,7 @@ export async function renderDashboard(container) {
                                     </div>
                                 </div>
                                 <div style="text-align: right;">
-                                    <div class="text-bold" style="color: var(--c-white);">-$${item.amount.toFixed(0)}</div>
+                                    <div class="text-bold" style="color: var(--c-white);">${state.formatCurrency(item.amount * -1)}</div>
                                     <div class="text-caption">${new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
                                 </div>
                             </div>

@@ -4,81 +4,113 @@ import { state } from '../state.js';
 
 export async function renderAI(container) {
     container.innerHTML = `
-        <div>
+        <div class="fade-in">
             <h1 class="page-title">AI Financial Insights</h1>
             
-            <div style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                 
-                <!-- Behavior Prediction -->
-                <div class="glass-card">
-                    <h2 style="margin-bottom: 1rem;">Behavior Analysis</h2>
-                    <p style="opacity: 0.7; margin-bottom: 1.5rem;">Analyze your recent spending and mood patterns to predict impulsive behavior risk.</p>
+                <!-- Behavior Prediction Card -->
+                <div class="glass-card" style="position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+                    <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(var(--p-violet-neon), 0.2) 0%, transparent 70%); filter: blur(20px);"></div>
                     
-                    <button id="predict-btn" class="btn-primary">Analyze My Risk</button>
-                    
-                    <div id="prediction-result" class="hidden" style="margin-top: 1.5rem; padding: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 1rem;">
-                        <div style="font-size: 0.9rem; margin-bottom: 0.5rem; opacity: 0.7;">Risk Level</div>
-                        <div id="risk-score" style="font-size: 2rem; font-weight: 900; margin-bottom: 1rem;">--</div>
-                        <div id="risk-reason" style="font-size: 0.9rem; line-height: 1.6;"></div>
-                        <div id="risk-intervention" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgb(var(--color-2)); font-weight: bold;"></div>
-                    </div>
-                </div>
-
-                <!-- Future Simulation Redirection -->
-                <div class="glass-card" style="background: linear-gradient(135deg, rgba(0, 195, 154, 0.1), transparent); border: 1px solid var(--c-green-neon);">
-                    <h2 style="margin-bottom: 1rem;">Future Simulator V2</h2>
-                    <p style="opacity: 0.8; margin-bottom: 1.5rem; color: var(--c-white);">
-                        Experience the new AI-Powered Financial Time Machine. 
-                        See detailed 30-day analytics, survival probabilities, and shock resilience models.
+                    <h2 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="scan-eye" style="color: var(--c-violet-neon);"></i>
+                        Behavior Diagnostics
+                    </h2>
+                    <p style="opacity: 0.7; margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.6;">
+                        Neural analysis of your spending triggers and emotional spending patterns.
                     </p>
                     
-                    <button id="go-to-sim" class="btn-primary" style="background: var(--c-green-neon); color: black; font-weight: bold;">
-                        <i data-lucide="play-circle" style="width: 18px; margin-right: 8px; vertical-align: middle;"></i>
-                        Launch Simulator
-                    </button>
-                </div>
-            </div>
-
-            <!-- Removed Legacy Simulation Result Container -->
-        </div>
-            
-            <!-- AI Chatbot Buddy -->
-            <div style="margin-top: 3rem;">
-                <h2 style="margin-bottom: 1.5rem; text-align: center;">Ask 'Fin' - Your Buddy</h2>
-                <div class="glass-card" id="chat-container" style="height: 500px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
-                    
-                    <!-- Header -->
-                    <div style="padding: 1rem 1.5rem; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.8rem;">
-                        <div style="width: 10px; height: 10px; background: rgb(var(--p-green-neon)); border-radius: 50%; box-shadow: 0 0 10px rgb(var(--p-green-neon));"></div>
-                        <div style="font-weight: bold; letter-spacing: 1px;">FIN</div>
-                    </div>
-
-                    <!-- Messages -->
-                    <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                        <div style="align-self: flex-start; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 1rem; border-bottom-left-radius: 4px; max-width: 80%;">
-                            Yo! I'm Fin. 💸 What's on your mind? We saving or spending today?
+                    <div id="analysis-placeholder" style="text-align: center; padding: 2rem 0;">
+                        <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem auto; border-radius: 50%; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(255,255,255,0.2);">
+                            <i data-lucide="activity" style="width: 32px; height: 32px; opacity: 0.5;"></i>
                         </div>
-                    </div>
-
-                    <!-- Input -->
-                    <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 0.5rem;">
-                        <input type="text" id="chat-input" class="glass-input" placeholder="Ask about crypto, budget, or life..." style="border-radius: 99px; padding-left: 1.5rem;">
-                        <button id="chat-send-btn" style="background: rgb(var(--p-violet-neon)); border: none; width: 45px; height: 45px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                            <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                        <button id="predict-btn" class="btn-primary" style="width: 100%; justify-content: center;">
+                            <i data-lucide="zap" style="width: 16px; margin-right: 8px;"></i> Run Diagnostics
                         </button>
                     </div>
+                    
+                    <div id="prediction-result" class="hidden" style="margin-top: 0;">
+                        <!-- Risk Meter -->
+                        <div style="margin-bottom: 1.5rem;">
+                             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">
+                                <span>Risk Assessment</span>
+                                <span id="risk-label">--</span>
+                            </div>
+                            <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                                <div id="risk-bar" style="width: 0%; height: 100%; background: var(--c-green-neon); transition: width 1s ease, background 0.3s;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Main Score -->
+                        <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                            <div style="font-size: 0.8rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Impulse Probability</div>
+                            <div id="risk-score" style="font-size: 3rem; font-weight: 800; line-height: 1;">--%</div>
+                        </div>
+
+                        <!-- Evaluation -->
+                        <div style="font-size: 0.95rem; line-height: 1.6; padding-bottom: 1rem; border-bottom: 1px dashed rgba(255,255,255,0.1); margin-bottom: 1rem;">
+                            <span style="opacity: 0.6;">Analysis:</span> <span id="risk-reason" style="color: rgba(255,255,255,0.9);"></span>
+                        </div>
+                        
+                        <!-- Intervention -->
+                        <div style="display: flex; gap: 1rem; align-items: flex-start; background: rgba(var(--p-blue-neon), 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--c-blue-neon);">
+                            <i data-lucide="lightbulb" style="color: var(--c-blue-neon); flex-shrink: 0; margin-top: 2px;"></i>
+                            <div>
+                                <div style="font-size: 0.8rem; font-weight: bold; color: var(--c-blue-neon); margin-bottom: 0.2rem;">RECOMMENDATION</div>
+                                <div id="risk-intervention" style="font-size: 0.9rem;"></div>
+                            </div>
+                        </div>
+
+                         <button id="reset-btn" style="width: 100%; margin-top: 1.5rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;">
+                            Reset Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Promo Card -->
+                <div class="glass-card" style="background: linear-gradient(160deg, rgba(0, 195, 154, 0.05), transparent); border: 1px solid rgba(0, 195, 154, 0.2); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="ios-card-header" style="color: var(--c-green-neon);">
+                            <i data-lucide="trending-up"></i>
+                            Future Simulator V2
+                        </div>
+                        <h3 style="font-size: 1.8rem; font-weight: 700; margin: 1rem 0 0.5rem 0; background: linear-gradient(to right, #fff, rgba(255,255,255,0.5)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            See the Future.
+                        </h3>
+                        <p style="opacity: 0.7; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+                            Project your finances 30 days ahead with our new deterministic engine. Defense-first modeling for survival probabilities.
+                        </p>
+                    </div>
+                    
+                    <button id="go-to-sim" class="btn-primary" style="background: var(--c-green-neon); color: black; font-weight: 700; justify-content: center;">
+                        Enter Simulation
+                        <i data-lucide="arrow-right" style="width: 16px; margin-left: 8px;"></i>
+                    </button>
                 </div>
             </div>
         </div>
     `;
 
-    // 1. Behavior Prediction
+    // 1. Behavior Prediction Logic
     const predictBtn = document.getElementById('predict-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const predResult = document.getElementById('prediction-result');
+    const placeholder = document.getElementById('analysis-placeholder');
+
+    // Reset handler
+    if (resetBtn) {
+        resetBtn.onclick = () => {
+            predResult.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+    }
 
     predictBtn.onclick = async () => {
-        predictBtn.textContent = "Analyzing...";
+        predictBtn.innerHTML = `<i data-lucide="loader-2" class="spin" style="width: 16px; margin-right: 8px;"></i> Processing...`;
         predictBtn.disabled = true;
+
+        if (window.lucide) window.lucide.createIcons();
 
         try {
             // First fetch data to send to AI
@@ -88,7 +120,7 @@ export async function renderAI(container) {
             ]);
 
             const payload = {
-                user_id: state.user.id || 1,
+                user_id: state.user?.id || 1,
                 transactions: spending.map(s => ({ amount: s.amount, category: s.category, timestamp: s.date })),
                 mood_logs: mood.map(m => `Score: ${m.score}, Note: ${m.note}`)
             };
@@ -96,100 +128,61 @@ export async function renderAI(container) {
             const res = await api('/ai/predict', 'POST', payload);
 
             // Render Result
+            placeholder.classList.add('hidden');
             predResult.classList.remove('hidden');
-            const score = res.risk_score;
-            const riskEl = document.getElementById('risk-score');
+            predResult.classList.add('fade-in');
 
-            riskEl.textContent = `${(score * 100).toFixed(0)}%`;
-            riskEl.style.color = score > 0.7 ? 'rgb(239, 68, 68)' : (score > 0.3 ? 'rgb(234, 179, 8)' : 'rgb(var(--color-1))');
+            const score = res.risk_score; // 0.0 to 1.0
+            const percentage = (score * 100).toFixed(0);
 
-            document.getElementById('risk-reason').textContent = res.trigger_reason;
-            document.getElementById('risk-intervention').textContent = `💡 ${res.recommended_intervention}`;
+            // Elements
+            const riskScoreEl = document.getElementById('risk-score');
+            const riskBar = document.getElementById('risk-bar');
+            const riskLabel = document.getElementById('risk-label');
+            const riskReason = document.getElementById('risk-reason');
+            const riskIntervention = document.getElementById('risk-intervention');
+
+            // Values
+            riskScoreEl.textContent = `${percentage}%`;
+            riskReason.textContent = res.trigger_reason || "No significant patterns detected.";
+            riskIntervention.textContent = res.recommended_intervention || "Maintain current spending velocity.";
+
+            // Dynamic Styling
+            let color = 'var(--c-green-neon)';
+            let labelText = 'Low Risk';
+
+            if (score > 0.7) {
+                color = '#ff4444';
+                labelText = 'CRITICAL RISK';
+            } else if (score > 0.4) {
+                color = '#ffb700'; // Amber
+                labelText = 'Moderate Risk';
+            }
+
+            riskScoreEl.style.color = color;
+            riskBar.style.background = color;
+            riskLabel.style.color = color;
+            riskLabel.textContent = labelText;
+
+            // Animate Bar
+            setTimeout(() => {
+                riskBar.style.width = `${percentage}%`;
+            }, 100);
 
         } catch (err) {
-            alert("AI Analysis Failed: " + err.message);
+            alert("Analysis Failed: " + err.message);
+            placeholder.classList.remove('hidden');
+            predResult.classList.add('hidden');
+            predictBtn.innerHTML = `<i data-lucide="zap" style="width: 16px; margin-right: 8px;"></i> Retry`;
         } finally {
-            predictBtn.textContent = "Analyze My Risk";
             predictBtn.disabled = false;
         }
     };
 
-    // 2. Simulation
     // 2. Simulation Redirect
     document.getElementById('go-to-sim').onclick = () => {
         window.location.hash = '#simulation';
     };
 
-    // 3. AI Chatbot
-    const chatContainer = document.getElementById('chat-container');
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('chat-send-btn');
-    const messagesDiv = document.getElementById('chat-messages');
-
-    let chatHistory = [];
-
-    const appendMessage = (role, text) => {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 1rem;
-            max-width: 80%;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        if (role === 'user') {
-            div.style.alignSelf = 'flex-end';
-            div.style.background = 'linear-gradient(135deg, rgb(var(--p-purple-deep)), rgb(var(--p-violet-neon)))';
-            div.style.color = 'white';
-            div.style.borderBottomRightRadius = '4px';
-        } else {
-            div.style.alignSelf = 'flex-start';
-            div.style.background = 'rgba(255, 255, 255, 0.1)';
-            div.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-            div.style.color = 'white';
-            div.style.borderBottomLeftRadius = '4px';
-        }
-
-        div.textContent = text;
-        messagesDiv.appendChild(div);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    };
-
-    const sendMessage = async () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        appendMessage('user', text);
-        chatInput.value = '';
-        chatInput.disabled = true;
-
-        // Add loading bubble/indicator could be nice here
-
-        try {
-            const res = await api('/ai/chat', 'POST', {
-                message: text,
-                history: chatHistory
-            });
-
-            const reply = res.response;
-            appendMessage('model', reply);
-
-            chatHistory.push({ role: 'user', content: text });
-            chatHistory.push({ role: 'model', content: reply });
-
-        } catch (err) {
-            appendMessage('model', "⚠️ Connection Error: " + err.message);
-        } finally {
-            chatInput.disabled = false;
-            chatInput.focus();
-        }
-    };
-
-    sendBtn.onclick = sendMessage;
-    chatInput.onkeypress = (e) => {
-        if (e.key === 'Enter') sendMessage();
-    };
+    if (window.lucide) window.lucide.createIcons();
 }

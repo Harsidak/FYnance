@@ -15,8 +15,11 @@ class User(UserBase):
     created_at: Optional[Any]
     current_streak: int
     total_xp: int
-    hourly_wage: Optional[float] = 0.0
-    monthly_income: Optional[float] = 0.0
+    primary_income: Optional[float] = 0.0
+    secondary_income: Optional[float] = 0.0
+    income_stability: Optional[str] = "fixed"
+    emergency_fund: Optional[float] = 0.0
+    investments: Optional[float] = 0.0
     savings_balance: Optional[float] = 0.0
     financial_context: Optional[str] = None
 
@@ -24,10 +27,13 @@ class User(UserBase):
         from_attributes = True
 
 class UserUpdate(BaseModel):
-    monthly_income: Optional[float] = None
+    primary_income: Optional[float] = None
+    secondary_income: Optional[float] = None
+    income_stability: Optional[str] = None
+    emergency_fund: Optional[float] = None
+    investments: Optional[float] = None
     savings_balance: Optional[float] = None
     financial_context: Optional[str] = None
-    hourly_wage: Optional[float] = None
 
 # --- Spending ---
 class SpendingBase(BaseModel):

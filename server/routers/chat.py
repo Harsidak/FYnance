@@ -103,9 +103,13 @@ async def send_message(session_id: int, message_data: ChatMessageRequest, db: Se
     
     context = f"""
     User Profile:
-    - Monthly Income: ${current_user.monthly_income}
+    - Primary Income: ${current_user.primary_income}
+    - Secondary Income: ${current_user.secondary_income}
+    - Total Monthly: ${current_user.monthly_income}
+    - Income Stability: {current_user.income_stability}
     - Savings Balance: ${current_user.savings_balance}
-    - Hourly Wage: ${current_user.hourly_wage}
+    - Emergency Fund: ${current_user.emergency_fund}
+    - Investments: ${current_user.investments}
     
     Active Goals:
     {chr(10).join([f"- {g.name}: ${g.current_amount}/${g.target_amount} (Due: {g.deadline})" for g in goals])}

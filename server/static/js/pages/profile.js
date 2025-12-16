@@ -14,7 +14,7 @@ export async function renderProfile(container) {
             <div class="profile-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
                 <!-- Left Column: Identity -->
                 <div class="vision-card" style="border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="ios-card-header">Identity</div>
+                    <div class="ios-card-header">${state.t('identity')}</div>
                     <div class="ios-form">
                         <div class="ios-input-group">
                             <label class="ios-label">Username</label>
@@ -24,31 +24,87 @@ export async function renderProfile(container) {
                             <label class="ios-label">Email</label>
                             <div class="static-val" style="font-family: 'Outfit', sans-serif; opacity: 0.6; font-size: 0.95rem;">${state.user?.email || 'N/A'}</div>
                         </div>
+                        
+                         <!-- Language Selector -->
+                        <div class="ios-input-group">
+                            <label class="ios-label">${state.t('language')}</label>
+                            <select id="profile-language" class="ios-input" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                                <option value="en">English (Default)</option>
+                                <option value="hi">Hindi (हिंदी)</option>
+                                <option value="bn">Bengali (বাংলা)</option>
+                                <option value="te">Telugu (తెలుగు)</option>
+                                <option value="mr">Marathi (मराठी)</option>
+                                <option value="ta">Tamil (தமிழ்)</option>
+                                <option value="ur">Urdu (اردو)</option>
+                                <option value="gu">Gujarati (ગુજરાતી)</option>
+                                <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                                <option value="ml">Malayalam (മലയാളം)</option>
+                                <option value="or">Odia (ଓଡ଼ିଆ)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Column: Economics -->
                 <div class="vision-card" style="border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="ios-card-header">Economics</div>
+                    <div class="ios-card-header">${state.t('economics')}</div>
                     <div class="ios-form">
-                        <div class="ios-input-group">
-                            <label class="ios-label">Hourly Wage ($)</label>
-                            <input type="number" id="profile-wage" value="${state.user?.hourly_wage || 0}" step="0.1" class="ios-input">
-                        </div>
-                        <div class="ios-input-group">
-                            <label class="ios-label">Monthly Income ($)</label>
-                            <input type="number" id="profile-income" value="${state.user?.monthly_income || 0}" step="0.1" class="ios-input">
+                        <!-- Currency Selector -->
+                         <div class="ios-input-group">
+                            <label class="ios-label">${state.t('currency')}</label>
+                            <select id="profile-currency" class="ios-input" style="background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                                <option value="USD">USD ($)</option>
+                                <option value="INR">INR (₹)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="JPY">JPY (¥)</option>
+                            </select>
                         </div>
                         
-                        <!-- Savings Strategy Section -->
-                        <div class="ios-input-group" style="margin-top: 1rem;">
+                        <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--c-violet-neon); text-transform: uppercase; letter-spacing: 1px;">${state.t('income_stability')}</div>
+
+                        <div class="ios-input-group">
+                            <label class="ios-label">${state.t('primary_income')}</label>
+                            <input type="number" id="profile-primary-income" value="${state.user?.primary_income || 0}" step="100" class="ios-input">
+                        </div>
+                        <div class="ios-input-group">
+                            <label class="ios-label">${state.t('secondary_income')}</label>
+                            <input type="number" id="profile-secondary-income" value="${state.user?.secondary_income || 0}" step="100" class="ios-input">
+                        </div>
+                        <div class="ios-input-group">
+                            <label class="ios-label">${state.t('income_stability')}</label>
+                            <select id="profile-stability" class="ios-input" style="background: rgba(0,0,0,0.3); color: white;">
+                                <option value="fixed" ${state.user?.income_stability === 'fixed' ? 'selected' : ''}>${state.t('stability_fixed')}</option>
+                                <option value="variable" ${state.user?.income_stability === 'variable' ? 'selected' : ''}>${state.t('stability_variable')}</option>
+                                <option value="volatile" ${state.user?.income_stability === 'volatile' ? 'selected' : ''}>${state.t('stability_volatile')}</option>
+                            </select>
+                        </div>
+
+                         <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--c-green-neon); text-transform: uppercase; letter-spacing: 1px;">${state.t('assets_savings')}</div>
+
+                        <div class="ios-input-group">
+                            <label class="ios-label">${state.t('savings_strategy')} (${state.t('currency')})</label>
+                            <!-- This was the hidden one, now we make it explicit 'Current Savings' but it maps to savings_balance -->
+                            <input type="number" id="profile-savings" value="${state.user?.savings_balance || 0}" step="100" class="ios-input">
+                        </div>
+                         <div class="ios-input-group">
+                            <label class="ios-label">${state.t('emergency_fund')}</label>
+                            <input type="number" id="profile-emergency" value="${state.user?.emergency_fund || 0}" step="100" class="ios-input">
+                        </div>
+                         <div class="ios-input-group">
+                            <label class="ios-label">${state.t('investments')}</label>
+                            <input type="number" id="profile-investments" value="${state.user?.investments || 0}" step="100" class="ios-input">
+                        </div>
+                        
+                        <!-- Savings Strategy Calculator (Visual only now, updates the savings input? No, existing logic calculated "savings target" based on income. 
+                        Wait, existing logic was: Strategy Button -> Calculate % of Income -> Update Savings Input.
+                        We should keep this logic but base it on (Primary + Secondary) Income. 
+                        -->
+                        <div class="ios-input-group" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                             <label class="ios-label" style="display: flex; justify-content: space-between; align-items: center;">
-                                <span>Savings Strategy</span>
-                                <span id="calculated-savings-display" style="color: var(--c-green-neon); font-size: 0.9rem;">$${state.user?.savings_balance || 0}</span>
+                                <span>${state.t('savings_strategy')} (Auto-Calc)</span>
+                                <span id="calculated-savings-display" style="color: var(--c-green-neon); font-size: 0.9rem;">${state.formatCurrency(state.user?.savings_balance || 0)}</span>
                             </label>
-                            
-                            <!-- Hidden input for form submission -->
-                            <input type="hidden" id="profile-savings" value="${state.user?.savings_balance || 0}">
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
                                 <button class="strategy-btn nav-btn" data-rate="0.1" style="font-size: 0.8rem; justify-content: center; border-radius: 12px;">
@@ -72,14 +128,35 @@ export async function renderProfile(container) {
             </div>
             
             <div class="actions" style="margin-top: 3rem; display: flex; gap: 1.5rem; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
-                <button id="page-logout" class="vision-btn-secondary" style="padding: 0.8rem 2rem;">Logout</button>
-                <button id="save-profile" class="btn-primary" style="margin-top: 0; width: auto; padding: 0.8rem 2.5rem;">Save Changes</button>
+                <button id="page-logout" class="vision-btn-secondary" style="padding: 0.8rem 2rem;">${state.t('logout')}</button>
+                <button id="save-profile" class="btn-primary" style="margin-top: 0; width: auto; padding: 0.8rem 2.5rem;">${state.t('save_changes')}</button>
             </div>
         </div>
     `;
 
+    // --- Localization Layout Logic (same as before) ---
+    const langSelect = document.getElementById('profile-language');
+    const currSelect = document.getElementById('profile-currency');
+
+    if (langSelect) {
+        langSelect.value = state.language;
+        langSelect.onchange = (e) => {
+            state.setPreference('language', e.target.value);
+            location.reload();
+        };
+    }
+
+    if (currSelect) {
+        currSelect.value = state.currency;
+        currSelect.onchange = (e) => {
+            state.setPreference('currency', e.target.value);
+            location.reload();
+        };
+    }
+
     // --- Strategy Logic ---
-    const incomeInput = document.getElementById('profile-income');
+    const primaryInput = document.getElementById('profile-primary-income');
+    const secondaryInput = document.getElementById('profile-secondary-income');
     const savingsInput = document.getElementById('profile-savings');
     const displaySpan = document.getElementById('calculated-savings-display');
     const customInput = document.getElementById('custom-savings-input');
@@ -88,22 +165,24 @@ export async function renderProfile(container) {
     let currentRate = null;
 
     const updateCalculation = () => {
-        const income = parseFloat(incomeInput.value) || 0;
+        const primary = parseFloat(primaryInput.value) || 0;
+        const secondary = parseFloat(secondaryInput.value) || 0;
+        const totalIncome = primary + secondary;
         let savings = 0;
 
         if (currentRate === 'custom') {
             const pct = parseFloat(customInput.value) || 0;
-            savings = income * (pct / 100);
+            savings = totalIncome * (pct / 100);
+            savingsInput.value = savings.toFixed(2); // Update input
         } else if (currentRate) {
-            savings = income * currentRate;
+            savings = totalIncome * currentRate;
+            savingsInput.value = savings.toFixed(2); // Update input
         } else {
-            // Default or Initial State - keep existing savings or calculate reverse rate?
-            // For now, respect the value already in hidden input if we haven't touched buttons
+            // If no rate selected, just read the savings input valid
             savings = parseFloat(savingsInput.value) || 0;
         }
 
-        savingsInput.value = savings.toFixed(2);
-        displaySpan.textContent = `$${savings.toFixed(2)}`;
+        displaySpan.textContent = state.formatCurrency(savings);
     };
 
     strategyBtns.forEach(btn => {
@@ -130,19 +209,27 @@ export async function renderProfile(container) {
     });
 
     customInput.oninput = updateCalculation;
-    incomeInput.oninput = updateCalculation;
+    // incomeInput.oninput = updateCalculation; // Removed
+    primaryInput.oninput = updateCalculation;
+    secondaryInput.oninput = updateCalculation;
 
     // --- Save & Logout Handlers --
     document.getElementById('save-profile').addEventListener('click', async () => {
-        const wage = parseFloat(document.getElementById('profile-wage').value) || 0;
-        const income = parseFloat(document.getElementById('profile-income').value) || 0;
+        const primary = parseFloat(document.getElementById('profile-primary-income').value) || 0;
+        const secondary = parseFloat(document.getElementById('profile-secondary-income').value) || 0;
         const savings = parseFloat(document.getElementById('profile-savings').value) || 0;
+        const emergency = parseFloat(document.getElementById('profile-emergency').value) || 0;
+        const investments = parseFloat(document.getElementById('profile-investments').value) || 0;
+        const stability = document.getElementById('profile-stability').value;
 
         try {
             const updatedUser = await api('/users/me/profile', 'PUT', {
-                hourly_wage: wage,
-                monthly_income: income,
+                primary_income: primary,
+                secondary_income: secondary,
                 savings_balance: savings,
+                income_stability: stability,
+                emergency_fund: emergency,
+                investments: investments,
                 financial_context: state.user?.financial_context || ''
             });
 

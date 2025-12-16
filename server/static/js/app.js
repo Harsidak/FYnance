@@ -1,16 +1,32 @@
-import { renderAuth } from './pages/auth.js?v=3';
-import { renderDashboard } from './pages/dashboard.js?v=4';
-import { renderSpending } from './pages/spending.js?v=3';
-import { renderGoals } from './pages/goals.js?v=2';
-import { renderMood } from './pages/mood.js?v=2';
-import { renderSubscriptions } from './pages/subscriptions.js?v=3';
-import { renderAI } from './pages/ai.js?v=4';
+import { renderAuth } from './pages/auth.js';
+import { renderDashboard } from './pages/dashboard.js';
+import { renderSpending } from './pages/spending.js';
+import { renderGoals } from './pages/goals.js';
+import { renderMood } from './pages/mood.js';
+import { renderSubscriptions } from './pages/subscriptions.js';
+import { renderAI } from './pages/ai.js';
 import { renderSimulation } from './pages/simulation.js';
 import { renderProfile } from './pages/profile.js';
 import { renderFinChat } from './pages/fin.js';
+import { state } from './state.js';
+
+// --- Localization Helper ---
+const updateNavTranslations = () => {
+    document.querySelectorAll('.nav-item').forEach(el => {
+        const key = el.dataset.page;
+        const span = el.querySelector('span');
+        if (key && span) {
+            // Special cases mapping if needed, otherwise direct key
+            let tKey = key;
+            if (key === 'ai') tKey = 'ai'; // Matches
+            if (key === 'fin') tKey = 'fin_nav'; // Mapped in translations.js
+            if (key === 'subscriptions') tKey = 'subs'; // Mapped
+            span.textContent = state.t(tKey);
+        }
+    });
+};
 import ColorBends from './components/color-bends.js';
 
-import { state } from './state.js';
 import { api, logout } from './api.js';
 
 // Init Background
@@ -111,5 +127,6 @@ window.addEventListener('load', () => {
         });
     }
 
+    updateNavTranslations();
     router();
 });

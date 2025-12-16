@@ -82,7 +82,10 @@ export async function renderSpending(container) {
             return;
         }
 
-        const hourlyWage = state.user?.hourly_wage || 15; // Default fallback
+        const primary = state.user?.primary_income || 0;
+        const secondary = state.user?.secondary_income || 0;
+        const monthlyTotal = primary + secondary;
+        const hourlyWage = (monthlyTotal > 0) ? (monthlyTotal / 160) : 15; // Fallback to 15 or calc
 
         listContainer.innerHTML = data.map(item => {
             let displayAmount;

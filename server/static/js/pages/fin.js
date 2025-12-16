@@ -1,5 +1,6 @@
 
 import { api } from '../api.js';
+import { state } from '../state.js';
 
 export async function renderFinChat(container) {
     let currentSessionId = null;
@@ -11,12 +12,12 @@ export async function renderFinChat(container) {
             <div class="glass-card" style="display: flex; flex-direction: column; overflow: hidden; padding: 0;">
                 <div style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <button id="new-chat-btn" class="btn-primary" style="margin-top: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.8rem;">
-                        <i data-lucide="plus"></i> New Chat
+                        <i data-lucide="plus"></i> ${state.t('new_chat')}
                     </button>
                 </div>
                 <div id="session-list" class="ios-list" style="border: none; overflow-y: auto; flex: 1;">
                     <!-- Sessions loaded here -->
-                    <div class="loading" style="font-size: 0.8rem; padding: 1rem;">Loading sessions...</div>
+                    <div class="loading" style="font-size: 0.8rem; padding: 1rem;">Loading...</div>
                 </div>
             </div>
 
@@ -31,14 +32,14 @@ export async function renderFinChat(container) {
                              <i data-lucide="brain-circuit" style="width: 30px; height: 30px; color: white;"></i>
                         </div>
                         <h3>Fin.AI Architect</h3>
-                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Select a chat or start a new one to begin.</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">${state.t('select_chat_prompt')}</p>
                     </div>
                 </div>
 
                 <!-- Input Area -->
                 <div style="padding: 1.5rem; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
                     <form id="chat-form" style="position: relative;">
-                        <textarea id="chat-input" placeholder="Ask Fin about your goals, spending, or financial strategy..." 
+                        <textarea id="chat-input" placeholder="${state.t('chat_placeholder')}" 
                             style="width: 100%; height: 50px; padding: 1rem; padding-right: 60px; border-radius: 25px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; resize: none; font-family: inherit; outline: none; transition: all 0.2s;"
                         ></textarea>
                         <button type="submit" style="position: absolute; right: 5px; bottom: 5px; background: var(--c-violet-neon); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
