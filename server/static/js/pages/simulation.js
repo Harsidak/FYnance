@@ -199,13 +199,36 @@ export async function renderSimulation(container) {
         loading.style.display = 'flex'; // Flex for centering
 
         try {
+            // 1. Fetch Profile Data needed for Wealth Architect
+            const [user, spending, subs, goals] = await Promise.all([
+                api('/auth/me'),
+                api('/spending?limit=50'),
+                api('/subscriptions'),
+                api('/goals')
+            ]);
+
+            // Calculate Monthly Expenses for Input
+            // (Sum of avg spending + fixed costs)
+            const monthlySubs = subs.reduce((acc, s) => acc + s.cost, 0);
+            const totalSpend = spending.reduce((acc, s) => acc + s.amount, 0);
+            const avgDaily = totalSpend / Math.max(spending.length, 1); // rough estimate
+            const estimatedMonthlyExpenses = (avgDaily * 30) + monthlySubs;
+
             const data = await api('/ai/simulate', 'POST', {
                 current_balance: state.user?.balance || 1200,
-                avg_daily_spending: 45,
+                avg_daily_spending: avgDaily || 45,
                 income_frequency_days: 14,
-                income_amount: 800,
-                savings_goal: 3000
+                income_amount: user.monthly_income || 2000,
+                savings_goal: 3000,
+
+                // Wealth Architect Inputs
+                monthly_expenses: estimatedMonthlyExpenses,
+                income_stability: user.income_stability || 'medium',
+                safety_multiplier: user.safety_multiplier || 6.0,
+                risk_tolerance: user.risk_tolerance || 'medium'
             });
+
+            console.log('Simulation Data:', data);
 
             renderResults(data);
             loading.style.display = 'none';
@@ -213,63 +236,146 @@ export async function renderSimulation(container) {
             results.classList.add('fade-in');
 
         } catch (err) {
+            console.error(err);
             loading.innerHTML = `<div style="color: #ff4444; font-size: 1.5rem;">CRITICAL ERROR: ${err.message}</div>`;
         }
     };
 
     function renderResults(data) {
-        document.getElementById('sim-narrative').innerText = `"${data.narrative}"`;
-        // document.getElementById('sim-survival').innerText = (data.survival_probability * 100).toFixed(0) + '%';
+        if (!data) return;
+
+        // --- 1. Narrative & Stats ---
+        document.getElementById('sim-narrative').innerText = `"${data.narrative || 'Analysis complete.'}"`;
 
         const safeDays = data.liquidity_buffer || 0;
         const liqEl = document.getElementById('sim-liquidity');
-        liqEl.textContent = safeDays < 3 ? "CRITICAL" : `${safeDays.toFixed(1)} DAYS`;
-        liqEl.style.color = safeDays < 7 ? '#ff4444' : 'var(--c-green-neon)';
+        if (liqEl) {
+            liqEl.textContent = safeDays < 30 ? "CRITICAL" : `${(safeDays / 30).toFixed(1)} MONTHS`;
+            liqEl.style.color = safeDays < 90 ? '#ff4444' : 'var(--c-green-neon)';
+        }
 
         const shockEl = document.getElementById('sim-shock');
-        shockEl.textContent = `Resilience: ${data.shock_resilience}`;
-        shockEl.style.color = data.shock_resilience === 'High' ? 'var(--c-green-neon)' : (data.shock_resilience === 'Medium' ? 'orange' : '#ff4444');
+        if (shockEl) {
+            shockEl.textContent = `Resilience: ${data.shock_resilience || 'Unknown'}`;
+            shockEl.style.color = data.shock_resilience === 'High' ? 'var(--c-green-neon)' : (data.shock_resilience === 'Medium' ? 'orange' : '#ff4444');
+        }
 
-        document.getElementById('sim-stress-narrative').textContent = `> ${data.stress_test_result}`;
+        // --- 2. Wealth Architect Blueprint ---
+        const reportDiv = document.getElementById('sim-report');
+        if (reportDiv) {
+            if (data.targets && data.buckets) {
+                reportDiv.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                        
+                        <!-- A. Targets (Gap Analysis) -->
+                        <div>
+                            <h4 style="color:rgba(255,255,255,0.6); margin-bottom: 1rem;">FINANCIAL TARGETS</h4>
+                            
+                            <!-- Security Floor -->
+                            <div style="margin-bottom: 1rem;">
+                                 <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;">
+                                    <span>Security Floor</span>
+                                    <span>$${(data.targets.current_net_worth || 0).toLocaleString()} / $${data.targets.security_floor.toLocaleString()}</span>
+                                 </div>
+                                 <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                                    <div style="width: ${(data.targets.current_net_worth / Math.max(data.targets.security_floor, 1) * 100).toFixed(0)}%; background: #4488ff; height: 100%;"></div>
+                                 </div>
+                            </div>
 
-        // document.getElementById('sim-waste').innerText = '-$' + data.waste_audit;  // Removed Waste Audit for Zen Look
-        document.getElementById('sim-report').innerHTML = marked.parse ? marked.parse(data.teacher_report || "") : data.teacher_report;
+                            <!-- Freedom Target -->
+                            <div style="margin-bottom: 1rem;">
+                                 <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;">
+                                    <span>Freedom Target</span>
+                                    <span>${(data.targets.current_net_worth / Math.max(data.targets.freedom_target, 1) * 100).toFixed(1)}%</span>
+                                 </div>
+                                 <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                                    <div style="width: ${(data.targets.current_net_worth / Math.max(data.targets.freedom_target, 1) * 100).toFixed(0)}%; background: var(--c-green-neon); height: 100%;"></div>
+                                 </div>
+                            </div>
+                        </div>
 
-        // Render Actions Cards
-        document.getElementById('sim-actions').innerHTML = data.recommended_actions.map(action => `
-            <div class="action-card">
-                <div style="display: flex; align-items: start; gap: 12px;">
-                    <i data-lucide="check-circle-2" style="color: var(--c-green-neon); margin-top: 2px;"></i>
-                    <div>
-                        <div style="font-weight: 600; color: #fff; margin-bottom: 4px;">Recommended Action</div>
-                        <div style="opacity: 0.8; font-size: 0.95rem;">${action}</div>
+                        <!-- B. Bucket Allocation -->
+                        <div>
+                            <h4 style="color:rgba(255,255,255,0.6); margin-bottom: 1rem;">RECOMMENDED STRATEGY</h4>
+                            <div style="display: flex; gap: 10px; height: 100px; margin-bottom: 1rem;">
+                                <!-- Security Bucket -->
+                                <div style="flex: ${data.buckets.security_percent}; background: #4488ff; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 0.9rem;">
+                                    <span>${data.buckets.security_percent}%</span>
+                                    <span style="font-size: 0.7rem; opacity: 0.8;">SECURITY</span>
+                                </div>
+                                <!-- Growth Bucket -->
+                                <div style="flex: ${data.buckets.growth_percent}; background: var(--c-green-neon); color: black; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 0.9rem;">
+                                    <span>${data.buckets.growth_percent}%</span>
+                                    <span style="font-size: 0.7rem; opacity: 0.8;">GROWTH</span>
+                                </div>
+                                <!-- Dream Bucket -->
+                                <div style="flex: ${data.buckets.dream_percent}; background: var(--c-violet-neon); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 0.9rem;">
+                                    <span>${data.buckets.dream_percent}%</span>
+                                    <span style="font-size: 0.7rem; opacity: 0.8;">DREAM</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; opacity: 0.7; line-height: 1.5;">${data.buckets.rationale}</div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `).join('');
+                    
+                    <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                        ${marked.parse ? marked.parse(data.teacher_report || "") : data.teacher_report}
+                    </div>
+                `;
+            } else {
+                // Fallback for missing architect data (old simulation fallback)
+                reportDiv.innerHTML = marked.parse ? marked.parse(data.teacher_report || "") : data.teacher_report;
+            }
+        }
 
-        // Render Chart
+        // --- 3. Action Path (Defensive) ---
+        const actionsContainer = document.getElementById('sim-actions');
+        if (actionsContainer) {
+            let actionsHtml = '';
+
+            // Case A: New Action Path (Array of Objects)
+            if (Array.isArray(data.action_path) && data.action_path.length > 0) {
+                actionsHtml = data.action_path.map(action => `
+                    <div class="action-card" style="border-left: 3px solid var(--c-green-neon);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="font-weight: 700; color: #fff;">${action.step}</span>
+                            <span class="badge-pill" style="font-size: 0.7rem;">${action.horizon}</span>
+                        </div>
+                        <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">Impact: <span style="color:var(--c-green-neon);">${action.impact}</span></div>
+                        <div style="font-size: 0.8rem; opacity: 0.5;">Difficulty: ${action.difficulty}</div>
+                    </div>
+                `).join('');
+
+                // Case B: Legacy Actions (Array of Strings)
+            } else if (Array.isArray(data.recommended_actions) && data.recommended_actions.length > 0) {
+                actionsHtml = data.recommended_actions.map(action => `
+                    <div class="action-card">
+                        <div style="opacity: 0.9;">${action}</div>
+                    </div>
+                `).join('');
+
+                // Case C: No Actions
+            } else {
+                actionsHtml = '<div style="opacity:0.5; font-style: italic;">No specific actions generated at this time.</div>';
+            }
+
+            actionsContainer.innerHTML = actionsHtml;
+        }
+
+        // --- 4. Chart (Timeline) ---
         const currentPath = data.thirty_day_forecast.current;
         const optPath = data.thirty_day_forecast.improved;
         const maxVal = Math.max(...currentPath, ...optPath, 100);
-        const minVal = Math.min(...currentPath, ...optPath, 0);
-        const range = maxVal - minVal;
 
         const chartContainer = document.getElementById('sim-chart-container');
         chartContainer.innerHTML = '';
 
-        // Render all 30 bars (or optimized subset)
         for (let i = 0; i < 30; i++) {
-            // Normalized height (0 to 100%)
-            // We align buckets to the bottom. Negative values might be tricky in simple CSS bar chart but we'll clamp for MVP viz.
-            const cVal = Math.max(0, currentPath[i]);
-            const oVal = Math.max(0, optPath[i]);
+            const hC = (Math.max(0, currentPath[i]) / maxVal) * 100;
+            const hO = (Math.max(0, optPath[i]) / maxVal) * 100;
 
             const group = document.createElement('div');
             group.style.cssText = `display: flex; gap: 4px; align-items: flex-end; height: 100%; width: 3%; position: relative;`;
-
-            const hC = (cVal / maxVal) * 100;
-            const hO = (oVal / maxVal) * 100;
 
             const barC = document.createElement('div');
             barC.style.cssText = `width: 100%; background: #ff4444; height: ${hC}%; border-radius: 4px; opacity: 0.6; transition: height 1s ease;`;

@@ -18,21 +18,111 @@ class SimulationInput(BaseModel):
     income_amount: float
     savings_goal: float
     user_context: Optional[str] = "Student with irregular spending habits."
+    
+    # Wealth Architect Params
+    monthly_expenses: float
+    safety_multiplier: Optional[float] = 6.0 # Months of safety
+    income_stability: Optional[str] = "medium" # low, medium, high
+    risk_tolerance: Optional[str] = "medium" # low, medium, high
+
+class ActionStep(BaseModel):
+    step: str
+    impact: str
+    difficulty: str # Easy, Medium, Hard
+    horizon: str # Immediate, Short-term, Long-term
+
+class FinancialTargets(BaseModel):
+    security_floor: float
+    freedom_target: float
+    legacy_target: float
+    current_net_worth: float
+    gap_to_security: float
+    gap_to_freedom: float
+
+class BucketAllocation(BaseModel):
+    security_percent: float
+    growth_percent: float
+    dream_percent: float
+    rationale: str
 
 class SimulationOutput(BaseModel):
-    seven_day_forecast: Dict[str, List[float]]  # "current", "improved"
-    thirty_day_forecast: Dict[str, List[float]]
-    intervention_effectiveness: float
-    recommended_actions: List[str]
-    survival_probability: float # 0-1
-    shock_resilience: str # High/Medium/Low
-    liquidity_buffer: float # Days of expenses covered
-    stress_test_result: str # Narrative of worst-case scenario
-    waste_audit: float # Est. amount lost to waste
-    narrative: str # Brief AI explanation of the future
-    teacher_report: str # Full markdown analysis
+    # Forecasts
+    thirty_day_forecast: Dict[str, List[float]] # "current", "improved"
+    
+    # Wealth Architect Metrics
+    targets: FinancialTargets
+    buckets: BucketAllocation
+    
+    # AI Qualitative
+    narrative: str 
+    teacher_report: str 
+    action_path: List[ActionStep]
+    
+    # Resilience
+    shock_resilience: str 
+    liquidity_buffer: float
 
-# --- Deterministic Simulation Engine ---
+# --- Deterministic Engines ---
+
+class TargetEngine:
+    @staticmethod
+    def calculate(monthly_expenses, income_stability, desired_annual_lifestyle, current_nw):
+        # 1. Security Floor
+        # Multiplier depends on stability: High=6m, Med=12m, Low=18m
+        stability_map = {"high": 6, "medium": 12, "low": 18}
+        safety_months = stability_map.get(income_stability.lower(), 12)
+        security_floor = monthly_expenses * safety_months
+        
+        # 2. Freedom Target (4% Rule)
+        # Safe Withdrawal Rate
+        freedom_target = desired_annual_lifestyle / 0.04
+        
+        # 3. Legacy Target
+        legacy_target = freedom_target * 1.5
+        
+        return FinancialTargets(
+            security_floor=round(security_floor, 2),
+            freedom_target=round(freedom_target, 2),
+            legacy_target=round(legacy_target, 2),
+            current_net_worth=round(current_nw, 2),
+            gap_to_security=round(max(0, security_floor - current_nw), 2),
+            gap_to_freedom=round(max(0, freedom_target - current_nw), 2)
+        )
+
+class BucketEngine:
+    @staticmethod
+    def allocate(income_stability, risk_tolerance, age=30):
+        # Base logic
+        security = 50.0
+        growth = 30.0
+        dream = 20.0
+        
+        # Adjust for Stability
+        if income_stability == "low":
+            security += 20 # 70
+            growth -= 10   # 20
+            dream -= 10    # 10
+        elif income_stability == "high":
+            security -= 10 # 40
+            growth += 10   # 40
+        
+        # Adjust for Risk Tolerance
+        if risk_tolerance == "high":
+            growth += 10
+            security -= 10
+        elif risk_tolerance == "low":
+            security += 10
+            growth -= 10
+            
+        # Normalize
+        total = security + growth + dream
+        return BucketAllocation(
+            security_percent=round((security/total)*100, 1),
+            growth_percent=round((growth/total)*100, 1),
+            dream_percent=round((dream/total)*100, 1),
+            rationale=f" optimized for {income_stability} stability and {risk_tolerance} risk."
+        )
+
 class WealthSimulator:
     def __init__(self, balance, daily_spend, income_amt, income_freq):
         self.initial_limit = balance
@@ -41,30 +131,19 @@ class WealthSimulator:
         self.income_freq = income_freq
 
     def run_path(self, days=30, spend_mult=1.0, income_reliability=1.0, apy=0.0):
-        """
-        Runs a simulation path.
-        spend_mult: Multiplier for daily spend (e.g. 1.1 for 10% higher spend).
-        income_reliability: Probability (0-1) that income arrives on due date (simple model: if random > rel, skip).
-        apy: Annual Percentage Yield for interest (e.g. 0.04 for 4%).
-        """
         path = []
         balance = self.initial_limit
         daily_rate = (1 + apy) ** (1/365) - 1 if apy > 0 else 0
 
         for day in range(days):
-            # 1. Spend
-            # Add some variability: +/- 20% random noise on spend unless rigid
             variance = random.uniform(0.8, 1.2)
             actual_spend = self.daily_spend * spend_mult * variance
             balance -= actual_spend
 
-            # 2. Income
-            # Income day logic
             if (day + 1) % self.income_freq == 0:
                 if random.random() <= income_reliability:
                     balance += self.income_amt
             
-            # 3. Interest / Compounding
             if balance > 0:
                 balance += balance * daily_rate
 
@@ -72,25 +151,7 @@ class WealthSimulator:
         
         return path
 
-    def calculate_metrics(self, path):
-        min_bal = min(path)
-        end_bal = path[-1]
-        
-        # Survival Prob (Simple)
-        survival = 1.0 if min_bal > 0 else 0.0
-        
-        # Liquidity Buffer (Days until 0 based on avg spend)
-        # Using initial balance for pure liquidity calculation
-        buffer_days = self.initial_limit / self.daily_spend if self.daily_spend > 0 else 999
-        
-        return {
-            "min_balance": min_bal,
-            "end_balance": end_bal,
-            "survival_prob": survival,
-            "liquidity_buffer": round(buffer_days, 1)
-        }
-
-# --- AI Configuration for Narrative ---
+# --- AI Configuration ---
 model = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash-exp",
     google_api_key=settings.GEMINI_API_KEY,
@@ -100,56 +161,47 @@ parser = JsonOutputParser()
 
 @router.post("/simulate/future", response_model=SimulationOutput)
 async def simulate_future(data: SimulationInput):
-    # 1. Run Deterministic Math Models
-    sim = WealthSimulator(
-        data.current_balance, 
-        data.avg_daily_spending, 
-        data.income_amount, 
-        data.income_frequency_days
+    # 1. Run Deterministic Math Models (Targets & Buckets)
+    targets = TargetEngine.calculate(
+        monthly_expenses=data.monthly_expenses,
+        income_stability=data.income_stability,
+        desired_annual_lifestyle=data.monthly_expenses * 1.5 * 12, # Aspiration assumption
+        current_nw=data.current_balance
     )
-
-    # A. Baseline Path (Current Status Quo)
-    path_baseline = sim.run_path(days=30, spend_mult=1.0, income_reliability=1.0, apy=0.0)
     
-    # B. Conservative Path (Stress Test: +15% Spend, 90% Income Reliability)
-    path_conservative = sim.run_path(days=30, spend_mult=1.15, income_reliability=0.9, apy=0.0)
+    buckets = BucketEngine.allocate(
+        income_stability=data.income_stability,
+        risk_tolerance=data.risk_tolerance
+    )
     
-    # C. Optimized Path (Wealth Defense: -20% Spend, 4% APY Yield)
-    path_optimized = sim.run_path(days=30, spend_mult=0.8, income_reliability=1.0, apy=0.04)
-
-    # 2. Calculate Metrics from Math
-    metrics_base = sim.calculate_metrics(path_baseline)
-    metrics_stress = sim.calculate_metrics(path_conservative)
+    sim = WealthSimulator(data.current_balance, data.avg_daily_spending, data.income_amount, data.income_frequency_days)
+    path_baseline = sim.run_path(days=30, spend_mult=1.0)
+    path_optimized = sim.run_path(days=30, spend_mult=0.8, apy=0.04)
     
-    # 3. AI Narrative Generation
-    # We pass the MATH results to the AI, asking it to explain them.
-    from wealth_principles import WEALTH_DEFENSE_PROMPT
-    
+    # 2. AI Narrative & Action Path
     prompt = ChatPromptTemplate.from_template(
-        WEALTH_DEFENSE_PROMPT + """
+        """
+        Act as a Wealth Architect. Use the calculated financial data to build a strategic plan.
         
-        SYSTEM DATA (Valid Math Results):
-        - Current Balance: ${balance}
-        - 30-Day Projection (Baseline): Ends at ${end_base}, Low Point: ${min_base}
-        - 30-Day Projection (Stress Test): Ends at ${end_stress}, Low Point: ${min_stress}
-        - 30-Day Projection (Optimized): Ends at ${end_opt}
-        - Liquidity Buffer: {buffer} days of expenses.
-        - Survival Probability (Baseline): {surv_prob}
+        DATA:
+        - Security Floor: ${security_floor} (Gap: ${gap_security})
+        - Freedom Target: ${freedom_target}
+        - Recommended Buckets: Security {sec}%, Growth {gro}%, Dream {drm}%
+        
+        User Context: {user_context}
         
         TASK:
-        Interpret these results.
-        1. Compare the Baseline vs. Optimized outcome.
-        2. Analyze the Stress Test (Conservative) - did they survive variance?
-        3. Provide the "Teacher Report" and "Recommended Actions".
+        1. Create an "Action Path" of 3 distinct steps to close the gap to the Security Floor.
+        2. Write a brief teacher report explaining the bucket split.
         
         OUTPUT JSON:
         {{
+            "narrative": "One sentence summary.",
+            "teacher_report": "Markdown explanation.",
             "shock_resilience": "High/Medium/Low",
-            "stress_test_result": "Narrative of what happened in the stress test path.",
-            "waste_audit": (Estimate of potential saving between baseline and optimized end balance),
-            "narrative": "Short summary.",
-            "teacher_report": "Markdown report.",
-            "recommended_actions": ["Action 1", "Action 2"]
+            "action_path": [
+                {{ "step": "Cut Netflix", "impact": "+$15/mo", "difficulty": "Easy", "horizon": "Immediate" }}
+            ]
         }}
         """
     )
@@ -157,51 +209,36 @@ async def simulate_future(data: SimulationInput):
     chain = prompt | model | parser
     
     try:
-        ai_analysis = await chain.ainvoke({
-            "balance": data.current_balance,
-            "end_base": metrics_base["end_balance"],
-            "min_base": metrics_base["min_balance"],
-            "end_stress": metrics_stress["end_balance"],
-            "min_stress": metrics_stress["min_balance"],
-            "end_opt": path_optimized[-1],
-            "buffer": metrics_base["liquidity_buffer"],
-            "surv_prob": metrics_base["survival_prob"]
+        ai_resp = await chain.ainvoke({
+            "security_floor": targets.security_floor,
+            "gap_security": targets.gap_to_security,
+            "freedom_target": targets.freedom_target,
+            "sec": buckets.security_percent,
+            "gro": buckets.growth_percent,
+            "drm": buckets.dream_percent,
+            "user_context": data.user_context
         })
         
-        # Merge Math + AI
         return SimulationOutput(
-            seven_day_forecast={
-                "current": path_baseline[:7],
-                "improved": path_optimized[:7]
-            },
-            thirty_day_forecast={
-                "current": path_baseline,
-                "improved": path_optimized
-            },
-            intervention_effectiveness=0.9, # High confidence in math
-            recommended_actions=ai_analysis.get("recommended_actions", ["Reduce Volatility"]),
-            survival_probability=metrics_base["survival_prob"],
-            shock_resilience=ai_analysis.get("shock_resilience", "Medium"),
-            liquidity_buffer=metrics_base["liquidity_buffer"],
-            stress_test_result=ai_analysis.get("stress_test_result", "Stress test analysis pending."),
-            waste_audit=float(ai_analysis.get("waste_audit", 0.0)),
-            narrative=ai_analysis.get("narrative", "Simulation complete."),
-            teacher_report=ai_analysis.get("teacher_report", "Report generated.")
+            thirty_day_forecast={ "current": path_baseline, "improved": path_optimized },
+            targets=targets,
+            buckets=buckets,
+            narrative=ai_resp.get("narrative", "Plan generated."),
+            teacher_report=ai_resp.get("teacher_report", "Review your targets."),
+            action_path=[ActionStep(**step) for step in ai_resp.get("action_path", [])],
+            shock_resilience=ai_resp.get("shock_resilience", "Medium"),
+            liquidity_buffer=data.current_balance / max(data.avg_daily_spending, 1.0)
         )
         
     except Exception as e:
-        print(f"AI Narrative Failed: {e}")
-        # Fallback: Return Math Only
+        print(f"AI Sim Error: {e}")
         return SimulationOutput(
-            seven_day_forecast={"current": path_baseline[:7], "improved": path_optimized[:7]},
-            thirty_day_forecast={"current": path_baseline, "improved": path_optimized},
-            intervention_effectiveness=0.9,
-            recommended_actions=["System: AI Offline, but Math holds true.", "Cut spending by 20%."],
-            survival_probability=metrics_base["survival_prob"],
+            thirty_day_forecast={ "current": path_baseline, "improved": path_optimized },
+            targets=targets,
+            buckets=buckets,
+            narrative="AI unavailable.",
+            teacher_report="Math-only verification.",
+            action_path=[],
             shock_resilience="Unknown",
-            liquidity_buffer=metrics_base["liquidity_buffer"],
-            stress_test_result=f"Math Stress Test: End Balance ${metrics_stress['end_balance']}",
-            waste_audit=path_optimized[-1] - path_baseline[-1],
-            narrative="Deterministic projection shown.",
-            teacher_report="**AI Unavailable.** Displaying raw mathematical projections."
+            liquidity_buffer=0.0
         )

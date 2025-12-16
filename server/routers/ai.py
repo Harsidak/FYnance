@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 from pydantic import BaseModel
 import httpx
 
@@ -53,6 +53,57 @@ class SimulationInput(BaseModel):
     income_frequency_days: Optional[int] = 30
     income_amount: Optional[float] = 0.0
     savings_goal: Optional[float] = 0.0
+    
+    # Wealth Architect Fields
+    monthly_expenses: Optional[float] = 0.0
+    safety_multiplier: Optional[float] = 6.0
+    income_stability: Optional[str] = "medium"
+    risk_tolerance: Optional[str] = "medium"
+
+# --- Output Models ---
+class ActionStep(BaseModel):
+    step: str
+    impact: str
+    difficulty: str 
+    horizon: str 
+
+class FinancialTargets(BaseModel):
+    security_floor: float
+    freedom_target: float
+    legacy_target: float
+    current_net_worth: float
+    gap_to_security: float
+    gap_to_freedom: float
+
+class BucketAllocation(BaseModel):
+    security_percent: float
+    growth_percent: float
+    dream_percent: float
+    rationale: str
+
+class SimulationOutput(BaseModel):
+    # Forecasts
+    thirty_day_forecast: Dict[str, List[float]]
+    
+    # Wealth Architect Metrics
+    targets: Optional[FinancialTargets] = None
+    buckets: Optional[BucketAllocation] = None
+    
+    # AI Qualitative
+    narrative: str 
+    teacher_report: str 
+    action_path: Optional[List[ActionStep]] = []
+    
+    # Resilience
+    shock_resilience: str 
+    liquidity_buffer: float
+    
+    # Legacy Support (Optional)
+    seven_day_forecast: Optional[Dict[str, List[float]]] = None
+    recommended_actions: Optional[List[str]] = []
+    survival_probability: Optional[float] = 0.0
+    stress_test_result: Optional[str] = ""
+    waste_audit: Optional[float] = 0.0
 
 # --- Proxy Endpoints ---
 
