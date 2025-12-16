@@ -58,7 +58,12 @@ async def determine_intervention(data: InterventionRequest):
     # LangChain Prompt
     prompt = ChatPromptTemplate.from_template(
         """
-        Act as a Gen-Z financial coach.
+        Act as a Strategic Wealth Architect.
+        Your principles:
+        1. Calm, confident, and objective.
+        2. Focus on systems and rules, not willpower.
+        3. Prioritize safety and sustainability.
+
         User Data:
         - Risk Score: {risk_score} (0-1)
         - Trigger: {trigger}

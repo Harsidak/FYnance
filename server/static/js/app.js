@@ -6,16 +6,19 @@ import { renderMood } from './pages/mood.js?v=2';
 import { renderSubscriptions } from './pages/subscriptions.js?v=3';
 import { renderAI } from './pages/ai.js?v=4';
 import { renderSimulation } from './pages/simulation.js';
+import { renderProfile } from './pages/profile.js';
 import ColorBends from './components/color-bends.js';
 
 import { state } from './state.js';
+import { api, logout } from './api.js';
 
 // Init Background
 // Init Background (Moved to load event)
 
 // Global State Extension
 state.realityMode = false;
-export { state };
+// Global State Extension
+state.realityMode = false;
 
 // 🔥 RESTORE TOKEN ON PAGE LOAD (SAFARI FIX)
 const savedToken = localStorage.getItem('token');
@@ -29,47 +32,13 @@ const routes = {
     'spending': renderSpending,
     'goals': renderGoals,
     'mood': renderMood,
-    'subscriptions': renderSubscriptions,
     'ai': renderAI,
-    'simulation': renderSimulation
+    'simulation': renderSimulation,
+    'subscriptions': renderSubscriptions,
+    'profile': renderProfile
 };
 
-// API Wrapper
-export async function api(endpoint, method = 'GET', body = null) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
-
-    try {
-        const res = await fetch(`http://localhost:8000${endpoint}`, {
-            method,
-            headers,
-            body: body ? JSON.stringify(body) : null
-        });
-
-        if (res.status === 401) {
-            logout();
-            return null;
-        }
-
-        if (!res.ok) {
-            const err = await res.json();
-            const msg = typeof err.detail === 'object' ? JSON.stringify(err.detail) : (err.detail || 'API Error');
-            throw new Error(msg);
-        }
-
-        return await res.json();
-    } catch (e) {
-        console.error("API Call Failed:", e);
-        throw e;
-    }
-}
-
-export function logout() {
-    localStorage.removeItem('token');
-    state.token = null;
-    state.user = null;
-    window.location.hash = '#auth';
-}
+// API Wrapper and Logout moved to api.js
 
 async function router() {
     let hash = window.location.hash.slice(1) || 'dashboard';
@@ -91,8 +60,8 @@ async function router() {
         nav.classList.add('hidden');
     } else {
         nav.classList.remove('hidden');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const activeLink = document.querySelector(`.nav-link[data-page="${hash}"]`);
+        document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-item[data-page="${hash}"]`);
         if (activeLink) activeLink.classList.add('active');
     }
 
@@ -121,7 +90,7 @@ async function router() {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', () => {
-    document.getElementById('logout-btn').addEventListener('click', logout);
+    // document.getElementById('logout-btn').addEventListener('click', logout); // Moved to Profile page
 
     // Init Background
     const bgContainer = document.getElementById('color-bends-canvas');

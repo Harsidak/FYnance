@@ -85,13 +85,52 @@ def get_savings_projection(db: Session = Depends(get_db), current_user: User = D
         "goals": data
     }
 
-@router.get("/roast")
-def get_roast(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # 1. Get spending habits
-    spendings = db.query(Spending).filter(Spending.user_id == current_user.id).all()
+@router.get("/resilience-metrics")
+def get_financial_resilience(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # 1. Calculate Monthly Burn (Last 30 Days)
+    thirty_days_ago = datetime.date.today() - datetime.timedelta(days=30)
+    recent_spending = db.query(Spending).filter(
+        Spending.user_id == current_user.id,
+        Spending.date >= thirty_days_ago
+    ).all()
+    
+    monthly_burn = sum(s.amount for s in recent_spending)
+    if monthly_burn == 0: monthly_burn = 1 # Avoid div/0
+    
+    # 2. Runway
+    # Assuming savings_balance is available on User model (ref users.py)
+    # If not, we might need to fallback to 0 or check how balance is tracked.
+    # Looking at `users.py`, there is `savings_balance`.
+    balance = getattr(current_user, "savings_balance", 0.0) or 0.0
+    runway_days = int((balance / monthly_burn) * 30)
+    
+    # 3. Fragility Score (0-100)
+    # High Fragility = Low Runway (< 30 days) OR High Burn
+    fragility_score = 0
+    if runway_days < 30: fragility_score += 50
+    if runway_days < 90: fragility_score += 20
+    if monthly_burn > (getattr(current_user, "monthly_income", 3000) or 3000): fragility_score += 30
+    
+    fragility_score = min(fragility_score, 100)
+    
+    return {
+        "monthly_burn": monthly_burn,
+        "runway_days": runway_days,
+        "fragility_score": fragility_score,
+        "status": "CRITICAL" if fragility_score > 70 else "STABLE" if fragility_score < 30 else "VULNERABLE"
+    }
+
+@router.get("/strategic-audit")
+def get_strategic_audit(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # Replaces "Roast" with "Wealth Architect Critique"
+    thirty_days_ago = datetime.date.today() - datetime.timedelta(days=30)
+    spendings = db.query(Spending).filter(
+        Spending.user_id == current_user.id,
+        Spending.date >= thirty_days_ago
+    ).all()
     
     if not spendings:
-        return {"roast": "You haven't spent any money yet. Are you a ghost? Start spending so I can judge you."}
+        return {"audit": "Data insufficient for strategic audit. Deploy capital (spend) to generate signals."}
         
     total_spent = sum(s.amount for s in spendings)
     categories = {}
@@ -102,17 +141,13 @@ def get_roast(db: Session = Depends(get_db), current_user: User = Depends(get_cu
     top_amount = categories[top_category]
     percent = int((top_amount / total_spent) * 100)
     
-    # 2. Basic Roast Logic
-    roast = ""
-    if percent > 50:
-         roast = f"You spent {percent}% of your money on {top_category}. Seriously? Do you have no other hobbies?"
-    elif total_spent > 1000:
-         roast = f"You've blown ${total_spent} already. I hope you're happy, because your wallet is crying."
-    elif top_category == "Food":
-         roast = "Stop eating out. Your kitchen misses you, and so does your bank account."
-    elif top_category == "Shopping":
-         roast = "Retail therapy isn't a valid financial strategy. Put the card down."
+    # Logic: Strategic Detachment
+    audit = ""
+    if percent > 40:
+        audit = f"ALERT: Asymmetric Risk Detected. {percent}% of capital allocated to {top_category}. This concentration increases fragility. Recommendation: Diversify outlay or reduce {top_category} cap to 20%."
+    elif total_spent > (getattr(current_user, "monthly_income", 3000) or 3000):
+        audit = f"CRITICAL: Deficit Spending Detected. Outflow (${total_spent}) exceeds projected inflow. Immediate liquidity preservation protocol required. Cut all non-essential variable costs."
     else:
-         roast = f"Your spending is boring. {percent}% on {top_category}? Yawn. Do something wild next time."
-         
-    return {"roast": roast}
+        audit = f"OBSERVATION: Capital allocation stable. Top sector: {top_category} ({percent}%). Maintain defensive posture. Look for compounding opportunities in remaining surplus."
+          
+    return {"audit": audit}

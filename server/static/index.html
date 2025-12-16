@@ -15,12 +15,46 @@
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
+    <!-- DEBUG: Global Error Handler -->
+    <script>
+        window.onerror = function (message, source, lineno, colno, error) {
+            const errDiv = document.createElement('div');
+            errDiv.style.position = 'fixed';
+            errDiv.style.top = '0';
+            errDiv.style.left = '0';
+            errDiv.style.width = '100%';
+            errDiv.style.background = 'rgba(255, 0, 0, 0.9)';
+            errDiv.style.color = 'white';
+            errDiv.style.padding = '20px';
+            errDiv.style.zIndex = '99999';
+            errDiv.style.fontFamily = 'monospace';
+            errDiv.innerHTML = `<h3>CRITICAL ERROR</h3><p>${message}</p><p>${source}:${lineno}:${colno}</p><pre>${error?.stack || ''}</pre>`;
+            document.body.appendChild(errDiv);
+        };
+        window.addEventListener('unhandledrejection', function (event) {
+            const errDiv = document.createElement('div');
+            errDiv.style.position = 'fixed';
+            errDiv.style.top = '50%';
+            errDiv.style.left = '0';
+            errDiv.style.width = '100%';
+            errDiv.style.background = 'rgba(255, 100, 0, 0.9)';
+            errDiv.style.color = 'white';
+            errDiv.style.padding = '20px';
+            errDiv.style.zIndex = '99999';
+            errDiv.style.fontFamily = 'monospace';
+            errDiv.innerHTML = `<h3>UNHANDLED PROMISE</h3><p>${event.reason}</p>`;
+            document.body.appendChild(errDiv);
+        });
+    </script>
     <!-- Premium 3D Background -->
     <div id="color-bends-canvas" class="color-bends-container fixed-bg"></div>
 
+    <!-- Static Dimming Overlay -->
+    <div class="global-overlay"></div>
     <!-- Glass Overlay -->
     <div id="app" class="app-container">
         <!-- Floating Glass Nav -->
@@ -54,8 +88,11 @@
                         <i data-lucide="bot"></i>
                         <span>AI</span>
                     </a>
+                    <a href="#profile" class="nav-item" data-page="profile">
+                        <i data-lucide="user"></i>
+                        <span>Profile</span>
+                    </a>
                 </div>
-                <button id="logout-btn" class="vision-btn-sm">Logout</button>
             </div>
         </nav>
 

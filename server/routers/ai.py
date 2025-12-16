@@ -8,7 +8,9 @@ router = APIRouter(
     tags=["AI Features"]
 )
 
-AI_ENGINE_URL = "http://localhost:8001"
+import os
+
+AI_ENGINE_URL = os.getenv("AI_ENGINE_URL", "http://localhost:8001")
 
 # Types matching AI Engine
 class Transaction(BaseModel):

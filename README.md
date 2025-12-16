@@ -1,108 +1,76 @@
 # FYNANCE
 
 <div align="center">
-  <h3>VisionOS Inspired Personal Finance & AI Agent</h3>
-  <p>A next-generation finance tracker combining 3D glassmorphism UI with a proactive AI financial coach.</p>
+  <h3>VisionOS Inspired Personal Finance & Wealth Defense System</h3>
+  <p>A next-generation finance tracker combining 3D glassmorphism UI with a Strategic Wealth Architect.</p>
 </div>
 
 ---
 
 ## 🚀 Overview
 
-**FYNANCE** is a personal finance application designed to feel like a spatial operating system. It moves beyond simple spreadsheets by integrating **Behavioral Analytics** and **AI Interventions**.
+**FYNANCE** is more than a tracker—it is a **Wealth Defense & Capital Allocation System**. Designed with the philosophy of "Capital Preservation First," it helps users build enduring wealth through asymmetric risk management and psychological mastery.
 
-At its core is **Fin**, an AI agent powered by Google Gemini (via LangChain) that doesn't just answer questions—it analyzes your spending patterns, detects impulsive behavior, and intervenes with "micro-lessons" to help you build wealth.
+It integrates a **VisionOS-inspired UI** with **"The Architect"**—an AI intelligence powered by Google Gemini that doesn't just chat, but mathematically models your survival probability, critiques your capital allocation, and enforces defensive financial principles.
 
 ## ✨ Key Features
 
-- **💎 VisionOS UI**: A stunning, depth-based interface with glassmorphism, floating navigational elements, and ambient lighting.
-- **🤖 AI Financial Coach ("Fin")**:
-  - **Chat**: A fully contextual chatbot that knows your financial history and goals.
-  - **Intervention Engine**: Detects high-risk spending (e.g., late-night shopping) and nudges you before you buy.
-  - **Simulation**: Projects your financial future 6 months out based on current habits vs. optimized habits.
+- **🛡️ Wealth Defense Logic**: The system prioritizes "Never Going Broke" over "Getting Rich Quick."
+- **📐 The Architect**:
+  - **Strategic Audit**: Replaces generic advice with ruthless analysis of your financial fragility.
+  - **Resilience Metrics**: Tracks your **Runway** (Days to Broke) and **Fragility Score** (0-100).
+  - **Future Simulator**: Deterministic math models simulating "Conservative" (Stress Test) vs "Optimized" (Wealth Defense) paths.
+- **💎 VisionOS UI**: A stunning, depth-based interface with glassmorphism.
 - **📊 Core Financials**:
-  - **Spending Tracker**: Log transactions with categories and dates.
-  - **Subscription Manager**: Track recurring costs and see the total monthly drain.
-  - **Goal Setting**: Set visual savings targets.
-- **🧠 Mood & Behavior**:
-  - **Mood Logger**: Track how you feel when you spend to identify emotional spending triggers.
+  - **Spending Tracker**: Log transactions with categories.
+  - **Subscription Manager**: Identify and cut recurring capital leaks.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3 (Variables, Grid, Glassmorphism). No frameworks, just pure performance.
-- **Backend**: Python **FastAPI** (High performance, async).
-- **AI Engine**: 
-  - **LangChain**: For agentic workflows and chain management.
-  - **Google Gemini Pro**: For reasoning and generation.
-  - **ChromaDB** (Planned): For RAG (Retrieval Augmented Generation).
-- **Database**: SQLite (Simple, file-based persistence).
+- **Frontend**: Vanilla JavaScript (ES6+), VisionOS Glassmorphism (CSS3).
+- **Backend**: Python **FastAPI**.
+- **AI Engine**: LangChain + Google Gemini Pro (Agentic Workflows).
+- **Infrastructure**: Docker & Docker Compose.
 
 ## ⚡ Quick Start
 
-### Prerequisites
-- Python 3.10+
-- A Google AI Studio API Key
-
 ### Installation
 
-1.  **Clone the repository**
+1.  **Clone & Install**
     ```bash
     git clone https://github.com/Harsidak/FYnance.git
     cd FYnance
-    ```
-
-2.  **Install Dependencies**
-    ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Configure Environment**
-    
-    You need a Google API Key for the AI brain to work.
-    
-    1.  **Get a Key**: Go to [Google AI Studio](https://aistudio.google.com/app/apikey) and create a new API key.
-    2.  **Create Config File**:
-        - Navigate to the `ai_engine/` folder.
-        - Create a new file named `.env`.
-        - Paste your key inside like this:
-        ```ini
-        GEMINI_API_KEY=your_actual_api_key_starts_with_AIza...
-        ```
-    > **Note**: Do not put the `.env` file in the root folder; it belongs inside `ai_engine/`.
+2.  **Configure Environment**
+    - Create a `.env` file in the root directory (see `.env.example` or documentation).
 
-4.  **Run the System**
-    We have a unified build script that launches both the backend and the AI engine.
+3.  **Run System**
     ```bash
     python build.py
     ```
 
-5.  **Access the App**
-    Open your browser and navigate to: `http://localhost:8000`
+4.  **Access**
+    - Web App: `http://localhost:8000`
 
 ## 📂 Project Structure
 
 ```
 FYNANCE/
-├── ai_engine/           # The brain of the operation
-│   ├── modules/         # Chat, Intervention, Prediction logic
-│   └── main.py          # AI Microservice (Port 8001)
-├── server/              # Main Application Backend
-│   ├── routers/         # API Endpoints (Spending, Goals, Proxy to AI)
-│   ├── static/          # Frontend Assets (Glass UI, JS Modules)
-│   └── main.py          # Web Server (Port 8000)
-├── build.py             # Unified launcher script
-└── requirements.txt     # Backend dependencies
+├── ai_engine/           # The "Architect" Intelligence
+│   ├── modules/         # Simulation, Prediction, Chat Logic
+│   └── wealth_principles.py  # Core Philosophy
+├── server/              # Backend API & Math Engine
+│   ├── routers/         # Resilience Metrics, Strategic Audit
+│   └── static/          # Frontend Assets
+├── Dockerfile           # Production Container Config
+└── build.py             # Unified Launcher
 ```
 
 ## 🤝 Contributing
-We welcome contributions! Please see [CONTRIBUTION.md](./CONTRIBUTION.md) for our roadmap, known bugs, and research context.
-
-## 🔒 Security Note
-- **API Keys**: Never commit your `.env` file. It is included in `.gitignore`.
-- **Data**: All data is stored locally in `fynance.db`.
-
----
+See [CONTRIBUTION.md](./CONTRIBUTION.md) and [DEPLOY.md](./DEPLOY.md).
 
 <div align="center">
-  <sub>Built with bad financial decisions, so you don't have to make them.</sub>
+  <sub>Capital Preservation First. Optimization Second.</sub>
 </div>

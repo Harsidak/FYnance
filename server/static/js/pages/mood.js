@@ -1,5 +1,5 @@
 
-import { api } from '../app.js';
+import { api } from '../api.js';
 
 export async function renderMood(container) {
     container.innerHTML = `

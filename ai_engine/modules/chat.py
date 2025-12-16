@@ -42,17 +42,12 @@ async def chat_with_buddy(data: ChatRequest):
         langchain_history = []
         
         # Add System Context
-        system_content = f"""
-        You are Fin, a Gen-Z Financial Buddy.
-        Style: Casual and  emoji-friendly 🚀.  
-        Mission: Help users save money and build wealth.
+        from wealth_principles import get_architect_prompt
         
-        Financial Context / RAG Tips:
-        {context_tips}
-        
-        User's Current Setup:
-        {data.user_context}
-        """
+        system_content = get_architect_prompt(
+            context_tips=context_tips, 
+            user_context=data.user_context
+        )
         langchain_history.append(SystemMessage(content=system_content))
         
         # Add Conversation History

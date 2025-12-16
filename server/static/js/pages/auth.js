@@ -1,5 +1,5 @@
 
-import { api } from '../app.js';
+import { api } from '../api.js';
 import { state } from '../state.js';
 // Restore token on page reload (FIX auto logout)
 const savedToken = localStorage.getItem('token');

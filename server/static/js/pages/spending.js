@@ -1,5 +1,6 @@
 
-import { api, state } from '../app.js';
+import { state } from '../state.js';
+import { api } from '../api.js';
 
 export async function renderSpending(container) {
     container.innerHTML = `

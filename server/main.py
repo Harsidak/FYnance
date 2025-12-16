@@ -60,6 +60,14 @@ async def catch_all(full_path: str):
 
 if __name__ == "__main__":
     import uvicorn
-    print("\n✅ Server running! Open this link in your browser:")
-    print("👉 http://localhost:8000\n")
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    from dotenv import load_dotenv
+    
+    # Load .env from parent directory
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+    
+    port = int(os.getenv("PORT", 8000))
+    debug_mode = os.getenv("DEBUG", "True").lower() == "true"
+    
+    print(f"\nServer running! Open this link in your browser:")
+    print(f"http://localhost:{port}\n")
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=debug_mode)

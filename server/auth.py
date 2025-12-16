@@ -3,7 +3,9 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = "supersecretkey_fynance_development_only"
+import os
+
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey_fynance_development_only")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 hours
 
@@ -14,7 +16,7 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     password = password[:72]
-    password = password[:72]
+
     return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

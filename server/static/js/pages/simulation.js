@@ -1,5 +1,5 @@
 
-import { api } from '../app.js';
+import { api } from '../api.js';
 import { state } from '../state.js';
 
 export async function renderSimulation(container) {
@@ -57,20 +57,19 @@ export async function renderSimulation(container) {
                 <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
                     <div class="glass-panel" style="background: rgba(20, 20, 25, 0.6); padding: 1.5rem;">
                          <div class="label-heading" style="color: var(--c-violet-neon); margin-bottom: 0.5rem;">AI NARRATIVE</div>
-                        <div id="sim-narrative" style="font-size: 1.4rem; font-weight: 500; line-height: 1.4; color: #fff;"></div>
+                         <div id="sim-narrative" style="font-size: 1.2rem; font-weight: 400; line-height: 1.5; color: rgba(255,255,255,0.9); font-style: italic;"></div>
                     </div>
 
-                    <div class="glass-panel text-center" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
-                        <div class="label-heading">SURVIVAL CHANCE</div>
-                        <div id="sim-survival-container" style="position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
-                            <div id="sim-survival" class="metric-lg text-green"></div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="glass-panel text-center" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div class="label-heading">LIQUIDITY SHIELD</div>
+                            <div id="sim-liquidity" class="metric-lg text-green"></div>
+                            <div class="text-caption" style="margin-top: 5px;">Days of Survival</div>
                         </div>
-                    </div>
-
-                    <div class="glass-panel text-center" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
-                        <div class="label-heading">WASTE AUDIT</div>
-                        <div id="sim-waste" class="metric-lg text-red"></div>
-                         <div class="text-caption" style="margin-top: 5px;">Potential Savings</div>
+                         <div class="glass-panel text-center" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div class="label-heading">STRESS TEST</div>
+                            <div id="sim-shock" class="text-bold" style="font-size: 1.1rem;"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -94,14 +93,18 @@ export async function renderSimulation(container) {
                     </div>
                 </div>
 
-                <!-- 3. Teacher's Report -->
-                <div class="glass-panel" style="padding: 2rem; margin-bottom: 2rem; background: linear-gradient(180deg, rgba(80, 50, 200, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(138, 92, 255, 0.3);">
-                     <div class="label-heading" style="color: var(--c-violet-neon); margin-bottom: 1rem; letter-spacing: 2px;">TEACHER'S ASSESSMENT</div>
+                <!-- 3. Architect's Report -->
+                <div class="glass-panel" style="padding: 2rem; margin-bottom: 2rem; background: linear-gradient(180deg, rgba(80, 50, 200, 0.05) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(138, 92, 255, 0.2);">
+                     <div class="label-heading" style="color: var(--c-violet-neon); margin-bottom: 1rem; letter-spacing: 2px;">WEALTH ARCHITECT'S BLUEPRINT</div>
                      <div id="sim-report" class="markdown-content"></div>
+                     <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div class="label-heading" style="margin-bottom: 0.5rem;">STRESS TEST SCENARIO</div>
+                        <div id="sim-stress-narrative" style="color: #ff4444; font-family: monospace;"></div>
+                     </div>
                 </div>
 
                 <!-- 4. Action Plan -->
-                <h3 class="label-heading" style="margin-bottom: 1rem; font-size: 1rem;">STRATEGIC INTERVENTIONS</h3>
+                <h3 class="label-heading" style="margin-bottom: 1rem; font-size: 1rem;">SYSTEMIC INTERVENTIONS</h3>
                 <div id="sim-actions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;"></div>
             </div>
 
@@ -216,9 +219,21 @@ export async function renderSimulation(container) {
 
     function renderResults(data) {
         document.getElementById('sim-narrative').innerText = `"${data.narrative}"`;
-        document.getElementById('sim-survival').innerText = (data.survival_probability * 100).toFixed(0) + '%';
-        document.getElementById('sim-waste').innerText = '-$' + data.waste_audit;
-        document.getElementById('sim-report').innerHTML = marked.parse ? marked.parse(data.teacher_report || "") : data.teacher_report; // Basic markdown support or raw text
+        // document.getElementById('sim-survival').innerText = (data.survival_probability * 100).toFixed(0) + '%';
+
+        const safeDays = data.liquidity_buffer || 0;
+        const liqEl = document.getElementById('sim-liquidity');
+        liqEl.textContent = safeDays < 3 ? "CRITICAL" : `${safeDays.toFixed(1)} DAYS`;
+        liqEl.style.color = safeDays < 7 ? '#ff4444' : 'var(--c-green-neon)';
+
+        const shockEl = document.getElementById('sim-shock');
+        shockEl.textContent = `Resilience: ${data.shock_resilience}`;
+        shockEl.style.color = data.shock_resilience === 'High' ? 'var(--c-green-neon)' : (data.shock_resilience === 'Medium' ? 'orange' : '#ff4444');
+
+        document.getElementById('sim-stress-narrative').textContent = `> ${data.stress_test_result}`;
+
+        // document.getElementById('sim-waste').innerText = '-$' + data.waste_audit;  // Removed Waste Audit for Zen Look
+        document.getElementById('sim-report').innerHTML = marked.parse ? marked.parse(data.teacher_report || "") : data.teacher_report;
 
         // Render Actions Cards
         document.getElementById('sim-actions').innerHTML = data.recommended_actions.map(action => `

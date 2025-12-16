@@ -1,5 +1,5 @@
 
-import { api } from '../app.js';
+import { api } from '../api.js';
 import { state } from '../state.js';
 
 export async function renderAI(container) {

@@ -16,9 +16,18 @@ class User(UserBase):
     current_streak: int
     total_xp: int
     hourly_wage: Optional[float] = 0.0
+    monthly_income: Optional[float] = 0.0
+    savings_balance: Optional[float] = 0.0
+    financial_context: Optional[str] = None
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    monthly_income: Optional[float] = None
+    savings_balance: Optional[float] = None
+    financial_context: Optional[str] = None
+    hourly_wage: Optional[float] = None
 
 # --- Spending ---
 class SpendingBase(BaseModel):

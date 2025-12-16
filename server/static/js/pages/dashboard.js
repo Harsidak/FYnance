@@ -1,5 +1,5 @@
 
-import { api } from '../app.js';
+import { api } from '../api.js';
 import { state } from '../state.js';
 
 export async function renderDashboard(container) {
@@ -36,16 +36,31 @@ export async function renderDashboard(container) {
         state.user = user;
 
         // Calculate Status
+        // Calculate Status (Wealth Health)
         const totalSpent = spending.reduce((acc, curr) => acc + curr.amount, 0);
-        const systemStatus = totalSpent > 2000 ? 'ATTENTION' : 'OPTIMIZED';
-        const statusColor = systemStatus === 'OPTIMIZED' ? 'var(--c-green-neon)' : '#ff4444';
+        const savingsRate = 0.2; // Ideal
+        const userSavings = state.user?.savings_balance || 0;
+
+        let systemStatus = 'STABLE';
+        let statusColor = 'var(--c-green-neon)';
+
+        if (totalSpent > 2000 && userSavings < 500) {
+            systemStatus = 'FRAGILE';
+            statusColor = '#ff4444';
+        } else if (totalSpent < 1500 && userSavings > 1000) {
+            systemStatus = 'FORTIFIED';
+            statusColor = 'var(--c-blue-neon)';
+        } else {
+            systemStatus = 'STABLE';
+            statusColor = 'var(--c-green-neon)';
+        }
 
         container.innerHTML = `
             <div class="control-center fade-in">
                 <!-- 1. HUD Header -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                     <div>
-                        <div class="text-caption" style="letter-spacing: 2px;">SYSTEM STATUS</div>
+                        <div class="text-caption" style="letter-spacing: 2px;">WEALTH HEALTH</div>
                         <div style="font-size: 1.5rem; font-weight: 700; color: ${statusColor}; text-shadow: 0 0 20px ${statusColor};">
                             ${systemStatus}
                         </div>
