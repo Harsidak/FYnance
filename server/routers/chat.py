@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from models import User, ChatSession, ChatMessage, Goal, Subscription, Spending
-from routers.auth import get_current_user
+from server.database import get_db
+from server.models import User, ChatSession, ChatMessage, Goal, Subscription, Spending
+from server.routers.auth import get_current_user
 from pydantic import BaseModel
 from typing import List, Optional
 import httpx

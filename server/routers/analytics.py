@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Dict, Any
-from database import get_db
-from models import User, Spending, Mood, Goal
+from server.database import get_db
+from server.models import User, Spending, Mood, Goal
 from .dependencies import get_current_user
 import datetime
 

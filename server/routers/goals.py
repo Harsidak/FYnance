@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
-from models import Goal, User
-from schemas import Goal as GoalSchema, GoalCreate, GoalUpdate
+from server.database import get_db
+from server.models import Goal, User
+from server.schemas import Goal as GoalSchema, GoalCreate, GoalUpdate
 from .dependencies import get_current_user
 
 router = APIRouter(

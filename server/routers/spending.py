@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
-from models import Spending, User
-from schemas import Spending as SpendingSchema, SpendingCreate
+from server.database import get_db
+from server.models import Spending, User
+from server.schemas import Spending as SpendingSchema, SpendingCreate
 from .dependencies import get_current_user
 import httpx
 

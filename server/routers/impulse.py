@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime, timedelta
-from database import get_db
-from models import ImpulseItem, User, Spending
-from schemas import ImpulseItem as ImpulseSchema, ImpulseCreate
+from server.database import get_db
+from server.models import ImpulseItem, User, Spending
+from server.schemas import ImpulseItem as ImpulseSchema, ImpulseCreate
 from .dependencies import get_current_user
 
 router = APIRouter(

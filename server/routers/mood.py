@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
-from models import Mood, User
-from schemas import Mood as MoodSchema, MoodCreate
+from server.database import get_db
+from server.models import Mood, User
+from server.schemas import Mood as MoodSchema, MoodCreate
 from .dependencies import get_current_user
 
 router = APIRouter(
