@@ -107,12 +107,21 @@ async function router() {
 }
 
 window.addEventListener('hashchange', router);
+
 window.addEventListener('load', () => {
-    // document.getElementById('logout-btn').addEventListener('click', logout); // Moved to Profile page
+    const hamburger = document.getElementById('hamburger');
+    const navbar = document.querySelector(".nav-items");
+
+    // Hamburger menu (mobile / iPad)
+    if (hamburger && navbar) {
+        hamburger.addEventListener('click', () => {
+            navbar.classList.toggle('open');
+        });
+    }
 
     // Init Background
     const bgContainer = document.getElementById('color-bends-canvas');
-    if (bgContainer) {
+    if (bgContainer && window.ColorBends) {
         new ColorBends(bgContainer, {
             colors: ["#ff5c7a", "#8a5cff", "#00ffd1"],
             rotation: 0,
@@ -127,6 +136,11 @@ window.addEventListener('load', () => {
         });
     }
 
-    updateNavTranslations();
+    // Update navbar language
+    if (typeof updateNavTranslations === "function") {
+        updateNavTranslations();
+    }
+
+    // Start app
     router();
-});
+});           
