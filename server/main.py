@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from server.cleanup import cleanup_old_data
 from fastapi.middleware.cors import CORSMiddleware
 from server.database import engine, Base
 from server.routers import (
@@ -17,7 +18,9 @@ from server.routers import (
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FYNANCE API")
-
+@app.on_event("startup")
+def run_cleanup():
+    cleanup_old_data()
 # CORS
 origins = ["*"]
 
