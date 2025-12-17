@@ -130,3 +130,14 @@ window.addEventListener('load', () => {
     updateNavTranslations();
     router();
 });
+
+/* ===== FINAL SAFE HAMBURGER ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("hamburger");
+  const nav = document.querySelector(".nav-items");
+  if (!btn || !nav) return;
+
+  btn.onclick = () => {
+    nav.classList.toggle("open");
+  };
+});
