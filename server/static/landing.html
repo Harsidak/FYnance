@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYNANCE - Wealth Defense</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Landing specific overrides */
+        .landing-hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            padding-top: 6rem;
+            padding-bottom: 4rem;
+        }
+
+        .hero-title-large {
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            line-height: 1.1;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.3));
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Premium Atmosphere -->
+    <div class="ambient-layer"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="global-overlay"></div>
+
+    <!-- Glass Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <a href="#" class="brand-logo">
+                <span class="logo-text">FYNANCE</span>
+            </a>
+
+            <div class="nav-items">
+                <!-- Navigation Links or Spacers could go here -->
+            </div>
+
+            <!-- Sign Up/In Button -->
+            <a href="/signin.html" class="nav-btn">
+                Sign In
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-container">
+        <section class="landing-hero">
+            <h1 class="hero-title-large">
+                Wealth Defense <br>
+                <span
+                    style="color: rgb(var(--p-green-mint)); -webkit-text-fill-color: rgb(var(--p-green-mint));">Reimagined</span>
+            </h1>
+
+            <p class="text-caption" style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 3rem;">
+                The advanced AI-powered platform to track spending, optimize habits, and simulate your financial future.
+            </p>
+
+            <div style="display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 6rem;">
+                <a href="/signin.html" class="btn-primary"
+                    style="min-width: 200px; text-decoration: none; text-align: center; display: inline-block;">
+                    Get Started
+                </a>
+                <a href="/signin.html" class="vision-btn-secondary"
+                    style="padding: 1rem 2.5rem; text-decoration: none;">
+                    Login
+                </a>
+            </div>
+
+            <!-- Features Grid -->
+            <div style="max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 2rem;">
+                <div class="bento-grid">
+                    <div class="glass-card">
+                        <i data-lucide="bar-chart-2"
+                            style="color: rgb(var(--p-violet-neon)); width: 32px; height: 32px; margin-bottom: 1rem;"></i>
+                        <h3 class="text-primary" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Analytics</h3>
+                        <p class="text-caption">Deep dive into your spending patterns with professional-grade
+                            visualization.</p>
+                    </div>
+
+                    <div class="glass-card">
+                        <i data-lucide="brain-circuit"
+                            style="color: rgb(var(--p-green-mint)); width: 32px; height: 32px; margin-bottom: 1rem;"></i>
+                        <h3 class="text-primary" style="font-size: 1.5rem; margin-bottom: 0.5rem;">AI Engine</h3>
+                        <p class="text-caption">Personalized financial advice driven by your unique behavioral data.</p>
+                    </div>
+
+                    <div class="glass-card">
+                        <i data-lucide="shield"
+                            style="color: #fff; width: 32px; height: 32px; margin-bottom: 1rem;"></i>
+                        <h3 class="text-primary" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Wealth Defense</h3>
+                        <p class="text-caption">Simulate future scenarios and protect your capital against risks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

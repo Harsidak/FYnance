@@ -43,6 +43,14 @@ if not os.path.exists(static_dir):
 
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+@app.get("/")
+async def root():
+    # Serve landing page at root
+    landing_path = os.path.join(static_dir, "landing.html")
+    if os.path.exists(landing_path):
+        return FileResponse(landing_path)
+    return FileResponse(os.path.join(static_dir, "index.html"))
+
 # Catch-all for SPA (must be last)
 @app.get("/{full_path:path}")
 async def catch_all(full_path: str):
